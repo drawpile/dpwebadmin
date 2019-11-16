@@ -1,0 +1,54 @@
+.input-grid {
+	display: grid;
+	grid-template-columns: 15% auto;
+	grid-gap: 15px;
+}
+
+.input-grid-caption {
+	grid-column: span 2;
+	padding: 5px;
+	margin: 0 15px;
+	border-bottom: 1px solid #4d4d4d;
+	color: #4d4d4d
+}
+
+.input-grid>label {
+	padding: 3px 0;
+	text-align: right;
+}
+
+.input-grid-field>p {
+	margin: 3px 0;
+}
+
+.input-text {
+	border: 1px solid #7f8c8d;
+	padding: 3px;
+	border-radius: 5px;
+}
+
+.input-readonly {
+	border: 1px solid #eff0f1;
+	color: #7f8c8d;
+	padding: 3px;
+	border-radius: 5px;
+	width: auto;
+}
+
+.input-text.pending, .input-checkbox.pending>span {
+	outline: 1px solid #f47750;
+}
+
+.input-text.long, .input-readonly.long {
+	width: 90%;
+}
+
+.input-text[type=number] {
+	text-align: right;
+	width: 4em;
+}
+
+.input-checkbox {
+	display: block;
+}
+
