@@ -32,6 +32,7 @@ export default class extends React.Component {
 		if(status) {
 			content = <>
 				<p>Server started at {status.started}</p>
+				<p>Address: {status.ext_host}{status.ext_port != 27750 ? `:${status.ext_port}` : ''}</p>
 				<p>Sessions: {status.sessions} / {status.maxSessions}</p>
 				<p>Users: {status.users}</p>
 				</>;

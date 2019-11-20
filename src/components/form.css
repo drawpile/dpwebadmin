@@ -17,6 +17,10 @@
 	text-align: right;
 }
 
+.input-grid-field>label.disabled {
+	color: #bdc3c7
+}
+
 .input-grid-field>p {
 	margin: 3px 0;
 }

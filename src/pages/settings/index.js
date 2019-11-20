@@ -98,6 +98,8 @@ export default class extends React.Component {
 				update: value => this.updateSetting(name, value),
 				pending: changed[name] !== undefined
 			});
+			const abuseReportAvailable = settings['abusereport'] !== undefined;
+			const extAuthAvailable = settings['extauth'] !== undefined;
 
 			inputGrid = <InputGrid>
 				<Caption>Server</Caption>
@@ -139,20 +141,28 @@ export default class extends React.Component {
 					<CheckboxInput label="Allow custom avatars" {...vprops('customAvatars')} />
 				</Field>
 
+				<Caption>Abuse reporting</Caption>
+				<Field>
+					<CheckboxInput label="Enable" enabled={abuseReportAvailable} {...vprops('abusereport')} />
+				</Field>
+				<Field label="Auth token">
+					<TextInput long enabled={abuseReportAvailable} {...vprops('reporttoken')} />
+				</Field>
+
 				<Caption>External authentication</Caption>
 				<Field>
-					<CheckboxInput label="Enable" {...vprops('extauth')} />
+					<CheckboxInput label="Enable" enabled={extAuthAvailable} {...vprops('extauth')} />
 				</Field>
 				<Field label="Validation key">
-					<TextInput long {...vprops('extauthkey')} />
+					<TextInput long enabled={extAuthAvailable} {...vprops('extauthkey')} />
 				</Field>
 				<Field label="User group">
-					<TextInput {...vprops('extauthgroup')} />
+					<TextInput enabled={extAuthAvailable} {...vprops('extauthgroup')} />
 				</Field>
 				<Field>
-					<CheckboxInput label="Permit guest logins when ext-auth server is unreachable" {...vprops('extauthfallback')} />
-					<CheckboxInput label="Allow ext-auth moderators" {...vprops('extauthmod')} />
-					<CheckboxInput label="Use ext-auth avatars" {...vprops('extAuthAvatars')} />
+					<CheckboxInput label="Permit guest logins when ext-auth server is unreachable" enabled={extAuthAvailable} {...vprops('extauthfallback')} />
+					<CheckboxInput label="Allow ext-auth moderators" enabled={extAuthAvailable} {...vprops('extauthmod')} />
+					<CheckboxInput label="Use ext-auth avatars" enabled={extAuthAvailable} {...vprops('extAuthAvatars')} />
 				</Field>
 			</InputGrid>;
 		}

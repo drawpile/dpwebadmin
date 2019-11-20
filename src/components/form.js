@@ -14,9 +14,10 @@ export const Field = ({label, children}) => <>
 	<div className="input-grid-field">{children}</div>
 	</>
 
-export const TextInput = ({long, value, update, pending}) => (
+export const TextInput = ({long, enabled=true, value, update, pending}) => (
 	<input
 		type="text"
+		disabled={!enabled}
 		className={classNames({'input-text': true, long, pending})}
 		value={value}
 		onChange={(e) => update(e.target.value)}
@@ -45,10 +46,11 @@ export const ReadOnly = ({long, value}) => (
 	/>
 );
 
-export const CheckboxInput = ({value, update, pending, label}) => (
-	<label className={classNames({"input-checkbox": true, pending})}>
+export const CheckboxInput = ({value, enabled=true, update, pending, label}) => (
+	<label className={classNames({"input-checkbox": true, "disabled": !enabled, pending})}>
 		<input type="checkbox"
 		checked={value}
+		disabled={!enabled}
 		onChange={e => update(e.target.checked)}
 		/>
 		<span>{label}</span>
