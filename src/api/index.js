@@ -17,6 +17,13 @@ async function doSend(path, method, body) {
 		},
 		body: JSON.stringify(body)
 	});
+
+	if(response.status === 400) {
+		const body = await response.json();
+		if(body.message !== undefined)
+			throw new Error(body.message);
+	}
+
 	if(!response.ok) {
 		throw new Error(response.statusText);
 	}
@@ -37,6 +44,9 @@ export function getStatus() { return doGet('/status/'); }
 
 export function getServerSettings() { return doGet('/server/'); }
 export function setServerSettings(settings) { return doSend('/server/', 'PUT', settings); }
+
+export function getListserverWhitelist() { return doGet('/listserverwhitelist/'); }
+export function setListserverWhitelist(whitelist) { return doSend('/listserverwhitelist/', 'PUT', whitelist); }
 
 export function getSessions() { return doGet('/sessions/'); }
 export function getSession(id) { return doGet(`/sessions/${id}`); }

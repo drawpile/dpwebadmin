@@ -8,6 +8,7 @@ import {
 
 import StatusPage from './pages/status/';
 import SettingsPage from './pages/settings/';
+import ListServerPage from './pages/listservers/';
 import SessionsPage from './pages/sessions/';
 import UsersPage from './pages/users/';
 import BanListPage from './pages/bans/';
@@ -24,6 +25,7 @@ function App() {
 				<ul>
 					<li><NavLink exact to="/">Status</NavLink></li>
 					<li><NavLink to="/settings/">Settings</NavLink></li>
+					<li><NavLink to="/listservers/">List servers</NavLink></li>
 					<li><NavLink to="/sessions/">Sessions</NavLink></li>
 					<li><NavLink to="/users/">Users</NavLink></li>
 					<li><NavLink to="/bans/">Bans</NavLink></li>
@@ -36,6 +38,7 @@ function App() {
 			<Switch>
 				<Route exact path="/"><StatusPage /></Route>
 				<Route path="/settings/"><SettingsPage /></Route>
+				<Route path="/listservers/"><ListServerPage /></Route>
 				<Route path="/sessions/"><SessionsPage /></Route>
 				<Route path="/users/"><UsersPage /></Route>
 				<Route path="/bans/"><BanListPage /></Route>
