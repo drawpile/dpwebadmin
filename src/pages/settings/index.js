@@ -82,7 +82,6 @@ export default class extends React.Component {
 
 	componentWillUnmount() {
 		if(this.debounceTimer !== null) {
-			console.log("Clearing timer");
 			clearTimeout(this.debounceTimer);
 		}
 	}

@@ -49,7 +49,6 @@ export class SessionListPage extends React.Component {
 	}
 
 	refreshList = async () => {
-		console.log("Refreshing sessions");
 		try {
 				const sessions = await getSessions();
 				this.setState({sessions, error: null});

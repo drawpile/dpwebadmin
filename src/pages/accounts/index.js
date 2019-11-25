@@ -53,13 +53,12 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 		flags = flags.join(' ');
 
 		try {
-			let response;
 			if(!user.id) {
 				/* No user ID set: we're creating a new user */
 				if(!form.password)
 					return;
 
-				response = await createAccount({
+				await createAccount({
 					username: form.username,
 					password: form.password,
 					locked: form.locked,
@@ -67,7 +66,7 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 				});
 
 			} else {
-				response = await changeAccount(user.id, {
+				await changeAccount(user.id, {
 					username: form.username,
 					password: form.password,
 					locked: form.locked,

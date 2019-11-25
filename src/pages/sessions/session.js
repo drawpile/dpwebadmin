@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 import {
 	InputGrid,
-	Caption,
 	Field,
 	TextInput,
 	IntegerInput,
@@ -166,7 +165,6 @@ export class SessionPage extends React.Component {
 	}
 
 	refreshList = async () => {
-		console.log("Refreshing session", this.props.sessionId);
 		try {
 			const session = await getSession(this.props.sessionId);
 			this.setStateSession(session);

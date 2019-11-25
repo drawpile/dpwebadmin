@@ -15,7 +15,7 @@ const LogListTable = ({logs}) => {
 			</tr>
 		</thead>
 		<tbody>
-			{logs.map(l => <tr>
+			{logs.map((l,idx) => <tr key={idx}>
 				<td>{l.timestamp}</td>
 				<td>{l.level}</td>
 				<td>{l.topic}</td>

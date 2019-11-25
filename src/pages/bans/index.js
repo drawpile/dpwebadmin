@@ -51,7 +51,7 @@ const AddBanModal = ({closeFunc}) => {
 
 	async function saveBanEntry() {
 		try {
-			const response = await addBan(form);
+			await addBan(form);
 		} catch(e) {
 			setError(e.toString());
 			return;

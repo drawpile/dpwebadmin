@@ -17,8 +17,6 @@ function Session() {
 
 export default function() {
 	const { path } = useRouteMatch();
-	const params = useParams();
-	console.log("params", params);
 	return <Switch>
 		<Route exact path={path}><SessionListPage /></Route>
 		<Route path={`${path}:sessionId`}><Session /></Route>
