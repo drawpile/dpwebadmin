@@ -6,6 +6,7 @@ import {
 	NavLink
 } from "react-router-dom";
 
+import LoginPage from './pages/login/';
 import StatusPage from './pages/status/';
 import SettingsPage from './pages/settings/';
 import ListServerPage from './pages/listservers/';
@@ -37,6 +38,7 @@ function App() {
 		<section id="content">
 			<Switch>
 				<Route exact path="/"><StatusPage /></Route>
+				<Route path="/login/"><LoginPage /></Route>
 				<Route path="/settings/"><SettingsPage /></Route>
 				<Route path="/listservers/"><ListServerPage /></Route>
 				<Route path="/sessions/"><SessionsPage /></Route>

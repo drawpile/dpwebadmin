@@ -1,7 +1,15 @@
-const APIROOT = '/api'
+let AUTHORIZATION = {}
 
 async function doGet(path) {
-	const response = await fetch(APIROOT + path);
+	const response = await fetch(process.env.REACT_APP_APIROOT + path, {
+		headers: {
+			...AUTHORIZATION,
+			'X-Requested-With': 'XMLHttpRequest'
+		}
+	});
+	if(response.status === 401 && process.env.REACT_APP_AUTHMODE === 'basic') {
+		window.location.pathname = `${process.env.REACT_APP_BASENAME || ''}/login`
+	}
 	if(!response.ok) {
 		throw new Error(response.statusText);
 	}
@@ -10,9 +18,11 @@ async function doGet(path) {
 }
 
 async function doSend(path, method, body) {
-	const response = await fetch(APIROOT + path, {
+	const response = await fetch(process.env.REACT_APP_APIROOT + path, {
 		method: method,
 		headers: {
+			...AUTHORIZATION,
+			'X-Requested-With': 'XMLHttpRequest',
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(body)
@@ -32,12 +42,39 @@ async function doSend(path, method, body) {
 }
 
 async function doDelete(path) {
-	const response = await fetch(APIROOT + path, {
-		method: 'DELETE'
+	const response = await fetch(process.env.REACT_APP_APIROOT + path, {
+		method: 'DELETE',
+		headers: {
+			...AUTHORIZATION,
+			'X-Requested-With': 'XMLHttpRequest'
+		},
 	});
 	if(!response.ok) {
 		throw new Error(response.statusText);
 	}
+}
+
+export async function tryLogin(username, password) {
+	const auth = {
+		'Authorization': 'Basic ' + btoa(unescape(encodeURIComponent(`${username}:${password}`)))
+	};
+
+	const response = await fetch(process.env.REACT_APP_APIROOT + '/status/', {
+		headers: {
+			...auth,
+			'X-Requested-With': 'XMLHttpRequest'
+		}
+	});
+	if(response.status === 401) {
+		return false;
+	}
+	if(!response.ok) {
+		throw new Error(response.statusText);
+	}
+
+	AUTHORIZATION = auth;
+
+	return true;
 }
 
 export function getStatus() { return doGet('/status/'); }
