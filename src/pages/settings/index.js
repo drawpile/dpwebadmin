@@ -114,7 +114,7 @@ export default class extends React.Component {
 				</Field>
 				<Field>
 					<CheckboxInput label="Allow unauthenticated users" {...vprops('allowGuests')} />
-					<CheckboxInput label="Allow anyone to host" {...vprops('allowGuestsHosts')} />
+					<CheckboxInput label="Allow anyone to host" {...vprops('allowGuestHosts')} />
 				</Field>
 
 				<Caption>Session</Caption>
