@@ -158,7 +158,7 @@ export class SessionPage extends React.Component {
 	}
 
 	componentWillUnmount() {
-		clearInterval(this.refreshTimer);
+		clearInterval(this.timer);
 		if(this.debounceTimer !== null) {
 			clearTimeout(this.debounceTimer);
 		}
