@@ -50,7 +50,7 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 			flags.push('MOD');
 		if(form.host)
 			flags.push('HOST');
-		flags = flags.join(' ');
+		flags = flags.join(',');
 
 		try {
 			if(!user.id) {
