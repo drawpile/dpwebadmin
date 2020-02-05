@@ -161,6 +161,7 @@ export default class extends React.Component {
 				<Field>
 					<CheckboxInput label="Permit guest logins when ext-auth server is unreachable" enabled={extAuthAvailable} {...vprops('extauthfallback')} />
 					<CheckboxInput label="Allow ext-auth moderators" enabled={extAuthAvailable} {...vprops('extauthmod')} />
+					<CheckboxInput label="Allow ext-auth hosts" enabled={extAuthAvailable} {...vprops('extauthhost')} />
 					<CheckboxInput label="Use ext-auth avatars" enabled={extAuthAvailable} {...vprops('extAuthAvatars')} />
 				</Field>
 			</InputGrid>;
