@@ -91,7 +91,7 @@ function MessageModal() {
 		if(ctx.userId) {
 			return changeUser(ctx.sessionId, ctx.userId, { message });
 		} else {
-			return changeSession(ctx.sessionId, { message });
+			return changeSession(ctx.sessionId, { alert: message });
 		}
 	}
 
