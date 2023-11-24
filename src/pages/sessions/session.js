@@ -63,7 +63,7 @@ const SessionInfo = ({session, openModal, vprops}) => {
 				<CheckboxInput label="Closed to new users" {...vprops('closed')} />
 				<CheckboxInput label="Registered users only" {...vprops('authOnly')} />
 				<CheckboxInput label="Persists without users" {...vprops('persistent')} />
-				<CheckboxInput label="NSFW" {...vprops('nsfm')} />
+				<CheckboxInput label="Not suitable for minors (NSFM)" {...vprops('nsfm')} />
 			</Field>
 		</InputGrid>
 		<p>
