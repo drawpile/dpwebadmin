@@ -40,7 +40,13 @@ const SessionTable = ({sessions}) => {
 				<td><Link to={`${path}${s.id}`}><abbr title={s.id}>{s.id.substr(0, 8)}...</abbr></Link></td>
 				<td><Link to={`${path}${s.id}`}>{s.alias}</Link></td>
 				<td>{s.userCount} / {s.maxUserCount}</td>
-				<td></td>
+				<td>
+					{s.closed && <span title="Closed to new users">🚪</span>}
+					{s.authOnly && <span title="Registered users only">👥</span>}
+					{s.persistent && <span title="Persists without users">💾</span>}
+					{s.nsfm && <span title="Not suitable for minors (NSFM)">🔞</span>}
+					{s.idleOverride && <span title="Ignores idle timeout">⏰</span>}
+				</td>
 				<td>{(s.size / (1024 *1024)).toFixed(2)} MB</td>
 				<td>{s.startTime}</td>
 			</tr>)}
