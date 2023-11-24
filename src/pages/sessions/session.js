@@ -64,6 +64,7 @@ const SessionInfo = ({session, openModal, vprops}) => {
 				<CheckboxInput label="Registered users only" {...vprops('authOnly')} />
 				<CheckboxInput label="Persists without users" {...vprops('persistent')} />
 				<CheckboxInput label="Not suitable for minors (NSFM)" {...vprops('nsfm')} />
+				<CheckboxInput label="Ignores idle timeout" {...vprops('idleOverride')} />
 			</Field>
 		</InputGrid>
 		<p>
