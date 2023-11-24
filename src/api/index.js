@@ -86,6 +86,7 @@ export function getListserverWhitelist() { return doGet('/listserverwhitelist/')
 export function setListserverWhitelist(whitelist) { return doSend('/listserverwhitelist/', 'PUT', whitelist); }
 
 export function getSessions() { return doGet('/sessions/'); }
+export function changeSessions(changes) { return doSend('/sessions', 'PUT', changes); }
 export function getSession(id) { return doGet(`/sessions/${id}`); }
 export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'PUT', changes); }
 export function terminateSession(id) { return doDelete(`/sessions/${id}`); }

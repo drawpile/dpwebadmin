@@ -1,10 +1,23 @@
 import React from 'react';
+import Modal from 'react-modal';
 import {
   Link,
   useRouteMatch
 } from "react-router-dom";
 
 import { getSessions } from '../../api/';
+import { ModalContent } from './modals.js';
+
+const MODAL_SMALL_STYLE = {
+	content: {
+		top: '20%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		marginRight: '-50%',
+		transform: 'translate(-50%, -50%)'
+	}
+}
 
 const SessionTable = ({sessions}) => {
 	const { path } = useRouteMatch();
@@ -36,7 +49,11 @@ const SessionTable = ({sessions}) => {
 }
 
 export class SessionListPage extends React.Component {
-	state = {}
+	state = {
+		modal: {
+			active: null,
+		},
+	};
 	timer = null;
 
 	componentDidMount() {
@@ -57,12 +74,37 @@ export class SessionListPage extends React.Component {
 		}
 	}
 
+	openModal = (dialog, opts={}) => {
+		this.setState({
+			modal: {
+				...opts,
+				active: dialog,
+			}
+		});
+	}
+
+	closeModal = () => {
+		this.setState({
+			modal: {
+				active: null
+			}
+		});
+	}
+
 	render() {
-		const { sessions, error } = this.state;
+		const { sessions, error, modal } = this.state;
 		return <div className="content-box">
 			<h2>Sessions</h2>
 			{error && <p className="alert-box">{error}</p>}
+			{sessions && <button onClick={() => this.openModal('message')} className="button">Message all sessions</button>}
 			{sessions && <SessionTable sessions={sessions} />}
+			<Modal
+				isOpen={modal.active !== null}
+				onRequestClose={this.closeModal}
+				style={MODAL_SMALL_STYLE}
+			>
+				<ModalContent modal={modal} closeFunc={this.closeModal} />
+			</Modal>
 		</div>
 	}
 }

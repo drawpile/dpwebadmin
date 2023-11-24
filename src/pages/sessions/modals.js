@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { changeSession, terminateSession, changeUser, kickUser } from '../../api';
+import { changeSessions, changeSession, terminateSession, changeUser, kickUser } from '../../api';
 
 /** Modal building blocks */
 const ModalContext = React.createContext({});
@@ -88,15 +88,19 @@ function MessageModal() {
 	const ctx = useContext(ModalContext);
 
 	function sendMessage() {
-		if(ctx.userId) {
-			return changeUser(ctx.sessionId, ctx.userId, { alert: message });
+		if(ctx.sessionId) {
+			if(ctx.userId) {
+				return changeUser(ctx.sessionId, ctx.userId, { alert: message });
+			} else {
+				return changeSession(ctx.sessionId, { alert: message });
+			}
 		} else {
-			return changeSession(ctx.sessionId, { alert: message });
+			return changeSessions({ alert: message });
 		}
 	}
 
 	return <>
-		<ModalHeader>Message {ctx.userName || "everyone"}</ModalHeader>
+		<ModalHeader>Message {ctx.sessionId ? ctx.userName || "everyone" : "all sessions"}</ModalHeader>
 		<input
 			type="text" 
 			className="input-text"
