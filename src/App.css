@@ -27,6 +27,21 @@ a {
 	text-decoration: none;
 }
 
+dt {
+	display: inline;
+	font-weight: bold;
+}
+
+dt:before {
+	content: "";
+	display: block;
+}
+
+dd {
+	display: inline;
+	margin-left: 0.5rem;
+}
+
 #root {
 	display: flex;
 	min-height: 100vh;

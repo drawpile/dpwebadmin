@@ -17,7 +17,7 @@ async function doGet(path) {
 	return await response.json();
 }
 
-async function doSend(path, method, body) {
+async function doSend(path, method, body, isText = false) {
 	const response = await fetch(process.env.REACT_APP_APIROOT + path, {
 		method: method,
 		headers: {
@@ -38,7 +38,7 @@ async function doSend(path, method, body) {
 		throw new Error(response.statusText);
 	}
 
-	return await response.json();
+	return isText ? await response.text() : await response.json();
 }
 
 async function doDelete(path) {
@@ -103,5 +103,9 @@ export function deleteAccount(accountId) { return doDelete(`/accounts/${accountI
 export function getBanList() { return doGet('/banlist/'); }
 export function addBan(ban) { return doSend('/banlist/', 'POST', ban); }
 export function deleteBan(id) { return doDelete(`/banlist/${id}`); }
+
+export function getExtBanList() { return doGet('/extbans/'); }
+export function refreshExtBans() { return doSend('/extbans/refresh', 'POST', {}); }
+export function changeExtBan(id, changes) { return doSend(`/extbans/${id}`, 'PUT', changes, true); }
 
 export function getLogs() { return doGet('/log/'); }

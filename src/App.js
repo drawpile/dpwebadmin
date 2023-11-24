@@ -13,6 +13,7 @@ import ListServerPage from './pages/listservers/';
 import SessionsPage from './pages/sessions/';
 import UsersPage from './pages/users/';
 import BanListPage from './pages/bans/';
+import ExtBanListPage from './pages/extbans/';
 import AccountsPage from './pages/accounts/';
 import LogsPage from './pages/logs/';
 
@@ -30,6 +31,7 @@ function App() {
 					<li><NavLink to="/sessions/">Sessions</NavLink></li>
 					<li><NavLink to="/users/">Users</NavLink></li>
 					<li><NavLink to="/bans/">Bans</NavLink></li>
+					<li><NavLink to="/extbans/">Extbans</NavLink></li>
 					<li><NavLink to="/accounts/">Accounts</NavLink></li>
 					<li><NavLink to="/logs/">Logs</NavLink></li>
 				</ul>
@@ -44,6 +46,7 @@ function App() {
 				<Route path="/sessions/"><SessionsPage /></Route>
 				<Route path="/users/"><UsersPage /></Route>
 				<Route path="/bans/"><BanListPage /></Route>
+				<Route path="/extbans/"><ExtBanListPage /></Route>
 				<Route path="/accounts/"><AccountsPage /></Route>
 				<Route path="/logs/"><LogsPage /></Route>
 			</Switch>
