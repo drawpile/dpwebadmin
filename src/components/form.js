@@ -24,6 +24,18 @@ export const TextInput = ({long, enabled=true, value, update, pending}) => (
 	/>
 );
 
+export const TextAreaInput = ({long=true, enabled=true, value, update, pending, rows=10, maxLength}) => (
+	<textarea
+		type="text"
+		disabled={!enabled}
+		className={classNames({'input-text': true, long, pending})}
+		value={value}
+		rows={rows}
+		maxLength={maxLength}
+		onChange={(e) => update(e.target.value)}
+	/>
+);
+
 export const IntegerInput = ({value, update, pending}) => (
 	<input
 		type="number"

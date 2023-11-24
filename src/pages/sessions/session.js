@@ -98,7 +98,7 @@ const UserListBox = ({sessionId, users, openModal}) => {
 						<td>{u.id}</td>
 						<td>{u.name}</td>
 						<td>{u.ip}</td>
-						<td>{u.muted && "Muted"} {u.mod && "MOD"} {u.op && "Op"}</td>
+						<td>{u.muted && "Muted"} {u.mod && "MOD"} {u.ghost && "GHOST"} {u.op && "Op"}</td>
 						<td>{u.online ? "online" : "offline"}</td>
 						<td>{u.online && <>
 							{!u.mod && <button onClick={() => changeUserOp(u)} className="small button">{u.op ? "De-op" : "Op"}</button>}

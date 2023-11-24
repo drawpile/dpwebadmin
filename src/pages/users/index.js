@@ -20,7 +20,7 @@ const UserListTable = ({users}) => {
 				<td>{u.id}</td>
 				<td><Link to={`/sessions/${u.session}`}>{u.session}</Link></td>
 				<td>{u.ip}</td>
-				<td>{u.mod && 'MOD'} {u.op && 'OP'}</td>
+				<td>{u.mod && 'MOD'} {u.op && 'OP'} {u.ghost && 'GHOST'}</td>
 			</tr>)}
 		</tbody>
 	</table>

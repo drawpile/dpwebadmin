@@ -32,6 +32,11 @@ a {
 	min-height: 100vh;
 }
 
+.details {
+	opacity: 75%;
+	font-size: small;
+}
+
 /** HEADER **/
 #header, #content {
 	padding: var(--header-padding);

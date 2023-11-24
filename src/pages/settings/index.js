@@ -5,7 +5,8 @@ import {
 	Caption,
 	Field,
 	TextInput,
-	CheckboxInput
+	CheckboxInput,
+	TextAreaInput
 } from '../../components/form.js';
 
 import * as API from '../../api';
@@ -116,6 +117,14 @@ export default class extends React.Component {
 					<CheckboxInput label="Allow unauthenticated users" {...vprops('allowGuests')} />
 					<CheckboxInput label="Allow anyone to host" {...vprops('allowGuestHosts')} />
 				</Field>
+				<Field label="Server rules">
+					<TextAreaInput maxLength="5000" {...vprops('ruleText')}></TextAreaInput>
+					<p className="details">Keep it short, provide a link to the full rules on a website instead.</p>
+				</Field>
+				<Field label="Login info link">
+					<TextInput long {...vprops('loginInfoUrl')} />
+					<p className="details">A link where users can register for an account. If you use drawpile.net's accounts, leave this blank, Drawpile will automatically show an appropriate link.</p>
+				</Field>
 
 				<Caption>Session</Caption>
 				<Field label="Welcome message">
@@ -138,6 +147,8 @@ export default class extends React.Component {
 					<CheckboxInput label="Archive terminated sessions" {...vprops('archive')} />
 					<CheckboxInput label="Do not include user list in session announcements" {...vprops('privateUserList')} />
 					<CheckboxInput label="Allow custom avatars" {...vprops('customAvatars')} />
+					<CheckboxInput label="Allow moderator ghosts to join" {...vprops('enableGhosts')} />
+					<CheckboxInput label="Allow admins and moderators disable the idle timeout for individual sessions" {...vprops('allowIdleOverride')} />
 				</Field>
 
 				<Caption>Abuse reporting</Caption>
@@ -162,7 +173,28 @@ export default class extends React.Component {
 					<CheckboxInput label="Permit guest logins when ext-auth server is unreachable" enabled={extAuthAvailable} {...vprops('extauthfallback')} />
 					<CheckboxInput label="Allow ext-auth moderators" enabled={extAuthAvailable} {...vprops('extauthmod')} />
 					<CheckboxInput label="Allow ext-auth hosts" enabled={extAuthAvailable} {...vprops('extauthhost')} />
+					<CheckboxInput label="Allow ext-auth ban exemptions" enabled={extAuthAvailable} {...vprops('extauthbanexempt')} />
+					<CheckboxInput label="Allow ext-auth ghosts" enabled={extAuthAvailable} {...vprops('extauthghosts')} />
 					<CheckboxInput label="Use ext-auth avatars" enabled={extAuthAvailable} {...vprops('extAuthAvatars')} />
+				</Field>
+
+				<Caption>External bans</Caption>
+				<Field label="Source URL">
+					<TextInput long {...vprops('extBansUrl')} />
+				</Field>
+				<Field label="Check interval">
+					<TextInput {...vprops('extBansCheckInterval')} />
+					<p className="details">In seconds, minimum 60.</p>
+				</Field>
+
+				<Caption>Restrictions</Caption>
+				<Field label="Minimum protocol version">
+					<TextInput {...vprops('minimumProtocolVersion')} />
+					<p className="details"><strong>dp:4.21.2</strong> is Drawpile 2.1, <strong>dp:4.24.0</strong> is Drawpile 2.2. Wrong values will prevent hosting any sessions!</p>
+				</Field>
+				<Field>
+					<CheckboxInput label="Only allow joining sessions through invite links" {...vprops('mandatoryLookup')} />
+					<p className="details">Enabling this restricts clients to Drawpile 2.2 or newer!</p>
 				</Field>
 			</InputGrid>;
 		}

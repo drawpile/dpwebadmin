@@ -46,10 +46,15 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 			return;
 
 		let flags = [];
-		if(form.mod)
+		if(form.mod) {
 			flags.push('MOD');
-		if(form.host)
+			if(form.ghost) {
+				flags.push('GHOST');
+			}
+		}
+		if(form.host) {
 			flags.push('HOST');
+		}
 		flags = flags.join(',');
 
 		try {
@@ -94,6 +99,7 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 			<Field label="Options">
 				<CheckboxInput label="Locked" {...vprops('locked')} />
 				<CheckboxInput label="Moderator" {...vprops('mod')} />
+				<CheckboxInput label="Ghost" enabled={form.mod} {...vprops('ghost')} />
 				<CheckboxInput label="Can host" {...vprops('host')} />
 			</Field>
 		</InputGrid>
@@ -138,7 +144,8 @@ export default function() {
 				password: '',
 				locked: user.locked,
 				mod: user.flags.indexOf('MOD')>=0,
-				host: user.flags.indexOf('HOST')>=0
+				host: user.flags.indexOf('HOST')>=0,
+				ghost: user.flags.indexOf('GHOST')>=0,
 			}
 		});
 	}
