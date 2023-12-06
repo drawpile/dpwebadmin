@@ -149,6 +149,7 @@ export default class extends React.Component {
 					<CheckboxInput label="Allow custom avatars" {...vprops('customAvatars')} />
 					<CheckboxInput label="Allow moderator ghosts to join" {...vprops('enableGhosts')} />
 					<CheckboxInput label="Allow admins and moderators disable the idle timeout for individual sessions" {...vprops('allowIdleOverride')} />
+					<CheckboxInput label="Force all sessions to be marked Not Suitable for Minors (NSFM)" {...vprops('forceNsfm')} />
 				</Field>
 
 				<Caption>Abuse reporting</Caption>
