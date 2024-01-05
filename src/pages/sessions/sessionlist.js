@@ -41,6 +41,7 @@ const SessionTable = ({sessions}) => {
 				<td><Link to={`${path}${s.id}`}>{s.alias}</Link></td>
 				<td>{s.userCount} / {s.maxUserCount}</td>
 				<td>
+					{s.hasPassword && <span title="Password">🔒</span>}
 					{s.closed && <span title="Closed to new users">🚪</span>}
 					{s.authOnly && <span title="Registered users only">👥</span>}
 					{s.persistent && <span title="Persists without users">💾</span>}
