@@ -194,7 +194,7 @@ export default class extends React.Component {
 					<p className="details"><strong>dp:4.21.2</strong> is Drawpile 2.1, <strong>dp:4.24.0</strong> is Drawpile 2.2. Wrong values will prevent hosting any sessions!</p>
 				</Field>
 				<Field>
-					<CheckboxInput label="Only allow joining sessions through invite links" {...vprops('mandatoryLookup')} />
+					<CheckboxInput label="Only allow joining sessions through direct links" {...vprops('mandatoryLookup')} />
 					<p className="details">Enabling this restricts clients to Drawpile 2.2 or newer!</p>
 				</Field>
 			</InputGrid>;
