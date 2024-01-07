@@ -58,6 +58,12 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 		if(form.banexempt) {
 			flags.push('BANEXEMPT');
 		}
+		if(form.web) {
+			flags.push('WEB');
+		}
+		if(form.websession) {
+			flags.push('WEBSESSION');
+		}
 		flags = flags.join(',');
 
 		try {
@@ -105,6 +111,8 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 				<CheckboxInput label="Ghost" enabled={form.mod} {...vprops('ghost')} />
 				<CheckboxInput label="Can host" {...vprops('host')} />
 				<CheckboxInput label="Exempt from bans" {...vprops('banexempt')} />
+				<CheckboxInput label="Can join via WebSocket" {...vprops('web')} />
+				<CheckboxInput label="Can manage WebSocket allowance on sessions" {...vprops('websession')} />
 			</Field>
 		</InputGrid>
 		<p>
@@ -136,6 +144,8 @@ export default function() {
 				mod: false,
 				host: true,
 				banexempt: false,
+				web: true,
+				websession: true,
 			}
 		});
 	}
@@ -152,6 +162,8 @@ export default function() {
 				host: user.flags.indexOf('HOST')>=0,
 				ghost: user.flags.indexOf('GHOST')>=0,
 				banexempt: user.flags.indexOf('BANEXEMPT')>=0,
+				web: user.flags.indexOf('WEB')>=0,
+				websession: user.flags.indexOf('WEBSESSION')>=0,
 			}
 		});
 	}
