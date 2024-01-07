@@ -55,6 +55,9 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 		if(form.host) {
 			flags.push('HOST');
 		}
+		if(form.banexempt) {
+			flags.push('BANEXEMPT');
+		}
 		flags = flags.join(',');
 
 		try {
@@ -101,6 +104,7 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 				<CheckboxInput label="Moderator" {...vprops('mod')} />
 				<CheckboxInput label="Ghost" enabled={form.mod} {...vprops('ghost')} />
 				<CheckboxInput label="Can host" {...vprops('host')} />
+				<CheckboxInput label="Exempt from bans" {...vprops('banexempt')} />
 			</Field>
 		</InputGrid>
 		<p>
@@ -130,7 +134,8 @@ export default function() {
 				password: '',
 				locked: false,
 				mod: false,
-				host: true
+				host: true,
+				banexempt: false,
 			}
 		});
 	}
@@ -146,6 +151,7 @@ export default function() {
 				mod: user.flags.indexOf('MOD')>=0,
 				host: user.flags.indexOf('HOST')>=0,
 				ghost: user.flags.indexOf('GHOST')>=0,
+				banexempt: user.flags.indexOf('BANEXEMPT')>=0,
 			}
 		});
 	}
