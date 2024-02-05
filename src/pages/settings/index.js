@@ -116,8 +116,8 @@ export default class extends React.Component {
 				<Field>
 					<CheckboxInput label="Allow unauthenticated users" {...vprops('allowGuests')} />
 					<CheckboxInput label="Allow anyone to host" {...vprops('allowGuestHosts')} />
-					<CheckboxInput label="Allow anyone to join via WebSocket" {...vprops('allowGuestWeb')} />
-					<CheckboxInput label="Allow anyone to manage WebSocket allowance on sessions" {...vprops('allowGuestWebSession')} />
+					<CheckboxInput label="Allow anyone to join via WebSocket" enabled={settings['allowGuestWeb'] !== undefined} {...vprops('allowGuestWeb')} />
+					<CheckboxInput label="Allow anyone to manage WebSocket allowance on sessions" enabled={settings['allowGuestWebSession'] !== undefined} {...vprops('allowGuestWebSession')} />
 				</Field>
 				<Field label="Server rules">
 					<TextAreaInput maxLength="5000" {...vprops('ruleText')}></TextAreaInput>
@@ -181,8 +181,8 @@ export default class extends React.Component {
 					<CheckboxInput label="Allow ext-auth hosts" enabled={extAuthAvailable} {...vprops('extauthhost')} />
 					<CheckboxInput label="Allow ext-auth ban exemptions" enabled={extAuthAvailable} {...vprops('extauthbanexempt')} />
 					<CheckboxInput label="Allow ext-auth ghosts" enabled={extAuthAvailable} {...vprops('extauthghosts')} />
-					<CheckboxInput label="Allow ext-auth web" enabled={extAuthAvailable} {...vprops('extauthweb')} />
-					<CheckboxInput label="Allow ext-auth web session" enabled={extAuthAvailable} {...vprops('extauthwebsession')} />
+					<CheckboxInput label="Allow ext-auth web" enabled={extAuthAvailable && settings['extauthweb'] !== undefined} {...vprops('extauthweb')} />
+					<CheckboxInput label="Allow ext-auth web session" enabled={extAuthAvailable && settings['extauthwebsession' !== undefined]} {...vprops('extauthwebsession')} />
 					<CheckboxInput label="Use ext-auth avatars" enabled={extAuthAvailable} {...vprops('extAuthAvatars')} />
 				</Field>
 
