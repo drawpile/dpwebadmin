@@ -138,8 +138,11 @@ export default class extends React.Component {
 				<Field label="Default autoreset threshold">
 					<TextInput {...vprops('autoResetThreshold')} />
 				</Field>
-				<Field label="Max simultaneous">
+				<Field label="Max simultaneous sessions">
 					<TextInput {...vprops('sessionCountLimit')} />
+				</Field>
+				<Field label="Max users per session">
+					<TextInput {...vprops('sessionUserLimit')} />
 				</Field>
 				<Field label="Idle time limit">
 					<TextInput {...vprops('idleTimeLimit')} />
