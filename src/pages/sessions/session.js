@@ -81,6 +81,10 @@ const UserListBox = ({sessionId, users, openModal}) => {
 		changeUser(sessionId, user.id, {op: !user.op});
 	}
 
+	function changeUserTrusted(user) {
+		changeUser(sessionId, user.id, {trusted: !user.trusted});
+	}
+
 	return <div className="content-box">
 		<h3>Users</h3>
 		<table className="table">
@@ -99,10 +103,11 @@ const UserListBox = ({sessionId, users, openModal}) => {
 						<td>{u.id}</td>
 						<td>{u.name}</td>
 						<td>{u.ip}</td>
-						<td>{u.muted && "Muted"} {u.mod && "MOD"} {u.ghost && "GHOST"} {u.op && "Op"}</td>
+						<td>{u.muted && "Muted"} {u.mod && "MOD"} {u.ghost && "GHOST"} {u.op && "Op"} {u.trusted && "Trusted"}</td>
 						<td>{u.online ? "online" : "offline"}</td>
 						<td>{u.online && <>
 							{!u.mod && <button onClick={() => changeUserOp(u)} className="small button">{u.op ? "De-op" : "Op"}</button>}
+							{!u.mod && <button onClick={() => changeUserTrusted(u)} className="small button">{u.trusted ? "Untrust" : "Trust"}</button>}
 							<button onClick={() => openModal('message', {userName: u.name, userId: u.id})} className="small button">Message</button>
 							<button onClick={() => openModal('kick', {userName: u.name, userId: u.id})} className="small danger button">Kick</button>
 							</>}
