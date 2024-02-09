@@ -1,9 +1,10 @@
 import React from 'react';
+import Modal from 'react-modal';
 import { Link } from "react-router-dom";
-
 import { getUsers } from '../../api';
+import { ModalContent } from './modals.js';
 
-const UserListTable = ({users}) => {
+const UserListTable = ({users, openModal}) => {
 	return <table className="table">
 		<thead>
 			<tr>
@@ -12,6 +13,7 @@ const UserListTable = ({users}) => {
 				<th>Session</th>
 				<th>IP</th>
 				<th>Features</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,13 +23,20 @@ const UserListTable = ({users}) => {
 				<td><Link to={`/sessions/${u.session}`}>{u.session}</Link></td>
 				<td>{u.ip}</td>
 				<td>{u.mod && 'MOD'} {u.op && 'OP'} {u.ghost && 'GHOST'}</td>
+				<td>
+					<button onClick={() => openModal('kick', {userName: u.name || u.ip, uid: u.uid})} className="small danger button">Kick</button>
+				</td>
 			</tr>)}
 		</tbody>
 	</table>
 }
 
 export default class extends React.Component {
-	state = {}
+	state = {
+		modal: {
+			active: null
+		},
+	}
 	timer = null;
 
 	componentDidMount() {
@@ -48,13 +57,39 @@ export default class extends React.Component {
 		}
 	}
 
+	openModal = (dialog, opts={}) => {
+		this.setState({
+			modal: {
+				...opts,
+				active: dialog,
+				sessionId: this.props.sessionId,
+			}
+		});
+	}
+
+	closeModal = () => {
+		this.setState({
+			modal: {
+				active: null
+			}
+		});
+	}
+
 	render() {
-		const { users, error } = this.state;
-		return <div className="content-box">
-			<h2>Users</h2>
-			{error && <p className="alert-box">{error}</p>}
-			{users && <UserListTable users={users} />}
-		</div>
+		const { users, error, modal } = this.state;
+		return <>
+			<div className="content-box">
+				<h2>Users</h2>
+				{error && <p className="alert-box">{error}</p>}
+				{users && <UserListTable users={users} openModal={this.openModal} />}
+			</div>
+			<Modal
+				isOpen={modal.active !== null}
+				onRequestClose={this.closeModal}
+			>
+				<ModalContent modal={modal} closeFunc={this.closeModal} />
+			</Modal>
+		</>;
 	}
 }
 

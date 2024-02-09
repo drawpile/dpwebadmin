@@ -92,8 +92,9 @@ export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'P
 export function terminateSession(id) { return doDelete(`/sessions/${id}`); }
 
 export function getUsers() { return doGet('/users/'); }
+export function kickUserByUid(uid) { return doDelete(`/users/${uid}`); }
 export function changeUser(sessionId, userId, changes) { return doSend(`/sessions/${sessionId}/${userId}`, 'PUT', changes); }
-export function kickUser(sessionId, userId) { return doDelete(`/sessions/${sessionId}/${userId}`); }
+export function kickUserFromSession(sessionId, userId) { return doDelete(`/sessions/${sessionId}/${userId}`); }
 
 export function getAccounts() { return doGet('/accounts/'); }
 export function createAccount(account) { return doSend('/accounts/', 'POST', account); }

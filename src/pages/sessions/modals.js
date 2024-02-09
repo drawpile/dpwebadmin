@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { changeSessions, changeSession, terminateSession, changeUser, kickUser } from '../../api';
+import { changeSessions, changeSession, terminateSession, changeUser, kickUserFromSession } from '../../api';
 
 /** Modal building blocks */
 const ModalContext = React.createContext({});
@@ -70,7 +70,7 @@ function KickUserModal() {
 	const ctx = useContext(ModalContext);
 
 	async function kick() {
-		await kickUser(ctx.sessionId, ctx.userId);
+		await kickUserFromSession(ctx.sessionId, ctx.userId);
 	}
 
 	return <>
