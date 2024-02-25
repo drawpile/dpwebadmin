@@ -1,3 +1,4 @@
+#!/bin/sh
 docker run --rm -ti \
 	--mount type=bind,source="$(pwd)",target=/app \
 	-w=/app \
