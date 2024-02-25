@@ -1,68 +1,33 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Drawpile Web Admin
 
-## Available Scripts
+This is a web-based administration interface for the dedicated [Drawpile](https://github.com/drawpile/Drawpile) server.
 
-In the project directory, you can run:
+## Releases
 
-### `npm start`
+You can find pre-built releases in [the GitHub Releases](https://github.com/drawpile/dpwebadmin/releases).
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+They each say which drawpile-srv version they are compatible with and what paths they were built with. If you want to use different paths you can't use them and must build this project yourself.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Building
 
-### `npm test`
+First, create a `.env.local` file with the following contents. If you want to use different paths, adjust them accordingly, `/admin/api` is the path under which drawpile-srv's admin interface is reachable, `/admin` is the path for the web admin interface itself.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+REACT_APP_APIROOT=/admin/api
+REACT_APP_BASENAME=/admin
+PUBLIC_URL=/admin
+```
 
-### `npm run build`
+Now you can build as follows:
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* To build on Linux, macOS or similar Unix-ish systems, run `npm install`, then `NODE_OPTIONS=--openssl-legacy-provider npm run build`.
+* To build on Windows, run `npm install`, then `/set NODE_OPTIONS=--openssl-legacy-provider`, then `npm run build`.
+* To build with Docker, run `./build-docker.sh`. You may have to run it with `sudo`, depending on how you have Docker set up.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Development
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This project is built using Create React App, which has since been deprecated. It also has way too many dependencies, which makes upgrading very difficult and keeps triggering dependabot warnings.
 
-### `npm run eject`
+No major development should be done on it anymore. It is instead supposed to be replaced with [drawpile-admin-webui](https://github.com/drawpile/drawpile-admin-webui). At the time of writing, that project only serves as an admin UI for the listserver.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+To run a development server, first make sure you don't have an `.env.local` file laying around. Then use `NODE_OPTIONS=--openssl-legacy-provider npm run start`. It will automatically open a page in your browser to `http://localhost:3000/`. You should have a drawpile-srv running on the same machine with `--web-admin-port 27780` passed to it.
