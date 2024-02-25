@@ -118,6 +118,7 @@ export default class extends React.Component {
 					<CheckboxInput label="Allow anyone to host" {...vprops('allowGuestHosts')} />
 					<CheckboxInput label="Allow anyone to join via WebSocket" enabled={settings['allowGuestWeb'] !== undefined} {...vprops('allowGuestWeb')} />
 					<CheckboxInput label="Allow anyone to manage WebSocket allowance on sessions" enabled={settings['allowGuestWebSession'] !== undefined} {...vprops('allowGuestWebSession')} />
+					<CheckboxInput label="Automatically allow WebSockets on passworded sessions, disallow on non-passworded ones" enabled={settings['passwordDependentWebSession'] !== undefined} {...vprops('passwordDependentWebSession')} />
 				</Field>
 				<Field label="Server rules">
 					<TextAreaInput maxLength="5000" {...vprops('ruleText')}></TextAreaInput>
