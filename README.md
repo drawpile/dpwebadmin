@@ -31,3 +31,9 @@ This project is built using Create React App, which has since been deprecated. I
 No major development should be done on it anymore. It is instead supposed to be replaced with [drawpile-admin-webui](https://github.com/drawpile/drawpile-admin-webui). At the time of writing, that project only serves as an admin UI for the listserver.
 
 To run a development server, first make sure you don't have an `.env.local` file laying around. Then use `NODE_OPTIONS=--openssl-legacy-provider npm run start`. It will automatically open a page in your browser to `http://localhost:3000/`. You should have a drawpile-srv running on the same machine with `--web-admin-port 27780` passed to it.
+
+## License
+
+This software is licensed under the MIT license, see [the LICENSE file](LICENSE) for details.
+
+Earlier versions of this repository didn't include a license. This was merely an oversight, consider them released under the same license as well.
