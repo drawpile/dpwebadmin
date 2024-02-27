@@ -101,10 +101,10 @@ function MessageModal() {
 
 	return <>
 		<ModalHeader>Message {ctx.sessionId ? ctx.userName || "everyone" : "all sessions"}</ModalHeader>
-		<input
-			type="text" 
-			className="input-text"
-			style={{width: "600px"}}
+		<textarea
+			type="text"
+			className="input-text message-area"
+			rows="5"
 			onChange={e => setMessage(e.target.value)}
 			/>
 		<ModalButtons>

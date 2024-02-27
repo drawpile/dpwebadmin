@@ -187,3 +187,6 @@ tr.offline {
 	background: var(--color-danger);
 }
 
+.message-area {
+	width: calc(min(600px, 90vw));
+}
