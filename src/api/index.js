@@ -90,6 +90,7 @@ export function changeSessions(changes) { return doSend('/sessions', 'PUT', chan
 export function getSession(id) { return doGet(`/sessions/${id}`); }
 export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'PUT', changes); }
 export function terminateSession(id) { return doDelete(`/sessions/${id}`); }
+export function unlistSession(sessionId, listingId) { return doDelete(`/sessions/${sessionId}/listing/${listingId}`); }
 
 export function getUsers() { return doGet('/users/'); }
 export function kickUserByUid(uid) { return doDelete(`/users/${uid}`); }

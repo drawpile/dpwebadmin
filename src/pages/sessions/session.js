@@ -14,7 +14,7 @@ import {
 import { ModalContent } from './modals.js';
 
 import { formatFileSize,reformatSettings } from '../../api/format.js';
-import { getSession, changeSession, changeUser } from '../../api/';
+import { getSession, changeSession, changeUser, unlistSession } from '../../api/';
 
 
 const MODAL_SMALL_STYLE = {
@@ -121,7 +121,7 @@ const UserListBox = ({sessionId, users, openModal}) => {
 	</div>
 }
 
-const ListingsBox = ({listings}) => {
+const ListingsBox = ({listings, unlisted, unlist}) => {
 	return <div className="content-box">
 		<h3>Listings</h3>
 		<table className="table">
@@ -141,7 +141,7 @@ const ListingsBox = ({listings}) => {
 						<td>{l.roomcode}</td>
 						<td>{l.private ? "Private" : "Public"}</td>
 						<td>
-							<button className="small danger button">Unlist</button>
+							{unlisted[l.id] ? "Unlisting…" : <button onClick={() => unlist(l.id)} className="small danger button">Unlist</button>}
 						</td>
 					</tr>)}
                 </tbody>
@@ -152,10 +152,11 @@ const ListingsBox = ({listings}) => {
 export class SessionPage extends React.Component {
 	state = {
 		changed: {},
+		unlisted: {},
 		modal: {
 			active: null
-		}
-	}
+		},
+	};
 	refreshTimer = null;
 	debounceTimer = null;
 
@@ -240,6 +241,16 @@ export class SessionPage extends React.Component {
 		});
 	}
 
+	unlist = (listingId) => {
+		this.setState({
+			unlisted: {
+				...this.state.unlisted,
+				[listingId]: true,
+			}
+		});
+		unlistSession(this.props.sessionId, listingId);
+	};
+
 	render() {
 		const { session, changed, error, modal } = this.state;
 		const vprops = name => ({
@@ -258,7 +269,7 @@ export class SessionPage extends React.Component {
 				<UserListBox sessionId={this.props.sessionId} users={session.users} openModal={this.openModal} />
 			}
 			{session &&
-				<ListingsBox listings={session.listings} />
+				<ListingsBox listings={session.listings} unlisted={this.state.unlisted} unlist={this.unlist} />
 			}
 			<Modal
 				isOpen={modal.active !== null}
