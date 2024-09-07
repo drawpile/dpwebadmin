@@ -28,7 +28,9 @@ export function formatDays(days) {
 
 export function reformatSettings(settings, formatters) {
 	for(const [name, formatter] of Object.entries(formatters)) {
-		settings[name] = formatter(settings[name]);
+		if(name in settings) {
+			settings[name] = formatter(settings[name]);
+		}
 	}
 }
 

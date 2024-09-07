@@ -53,6 +53,12 @@ const SessionInfo = ({session, openModal, vprops}) => {
 			</Field>
 			<Field label="Autoreset threshold">
 				<TextInput {...vprops('resetThreshold')} />
+				{session.effectiveResetThreshold && (
+				<>
+					{" effectively "}
+					<ReadOnly {...vprops("effectiveResetThreshold")} />
+				</>
+				)}
 			</Field>
 			<Field label="Users">
 				<ReadOnly value={session.userCount} />
@@ -73,6 +79,42 @@ const SessionInfo = ({session, openModal, vprops}) => {
 			<button onClick={e => openModal('setOpword')} className="button">{session.hasOpword ? "Change" : "Set"} opword</button>
 			<button onClick={e => openModal('terminate')} className="danger button">Terminate</button>
 		</p>
+	</div>
+}
+
+const StatusBox = ({session: {autoreset: {delay, historyFirstIndex, historyLastIndex, requestStatus, sessionState, stream, timer}}}) => {
+	function renderStream({state, ctxId, size, startIndex, messageCount, haveConsumer}) {
+		return <>
+			<dt>Reset stream state:</dt>
+			<dd>{state}</dd>
+			<dt>Reset stream user:</dt>
+			<dd>{ctxId}</dd>
+			<dt>Reset stream size:</dt>
+			<dd>{formatFileSize(size)}</dd>
+			<dt>Reset stream start index:</dt>
+			<dd>{startIndex}</dd>
+			<dt>Reset stream message count:</dt>
+			<dd>{messageCount}</dd>
+			<dt>Reset stream has consumer:</dt>
+			<dd>{haveConsumer ? "yes" : "no"}</dd>
+		</>;
+	}
+
+	return <div className="content-box">
+		<h3>Status</h3>
+		<dl>
+			<dt>Session state:</dt>
+			<dd>{sessionState}</dd>
+			<dt>History indexes:</dt>
+			<dd>{historyFirstIndex} to {historyLastIndex}</dd>
+			<dt>Autoreset request status:</dt>
+			<dd>{requestStatus}</dd>
+			<dt>Autoreset delay:</dt>
+			<dd>{delay} ms</dd>
+			<dt>Autoreset timer:</dt>
+			<dd>{timer === undefined ? "not active" : `${timer} ms` }</dd>
+			{stream && renderStream(stream)}
+		</dl>
 	</div>
 }
 
@@ -103,7 +145,7 @@ const UserListBox = ({sessionId, users, openModal}) => {
 						<td>{u.id}</td>
 						<td>{u.name}</td>
 						<td>{u.ip}</td>
-						<td>{u.muted && "Muted"} {u.mod && "MOD"} {u.ghost && "GHOST"} {u.op && "Op"} {u.trusted && "Trusted"}</td>
+						<td>{u.muted && "Muted"} {u.mod && "MOD"} {u.ghost && "GHOST"} {u.op && "Op"} {u.trusted && "Trusted"} {u.holdLocked && "Hold"} {u.resetFlags?.length ? `Reset(${u.resetFlags.join(" ")})`: ""}</td>
 						<td>{u.online ? "online" : "offline"}</td>
 						<td>{u.online && <>
 							{!u.mod && <button onClick={() => changeUserOp(u)} className="small button">{u.op ? "De-op" : "Op"}</button>}
@@ -184,6 +226,7 @@ export class SessionPage extends React.Component {
 	setStateSession(session) {
 		reformatSettings(session, {
 			resetThreshold: formatFileSize,
+			effectiveResetThreshold: formatFileSize,
 		});
 
 		this.setState({session, error: null});
@@ -265,6 +308,7 @@ export class SessionPage extends React.Component {
 				{error && <p className="alert-box">{error}</p>}
 				{session && <SessionInfo session={session} openModal={this.openModal} vprops={vprops} />}
 			</div>
+			{session?.autoreset && <StatusBox session={session} />}
 			{session &&
 				<UserListBox sessionId={this.props.sessionId} users={session.users} openModal={this.openModal} />
 			}
