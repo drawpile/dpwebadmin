@@ -184,6 +184,7 @@ export default class extends React.Component {
 					<CheckboxInput label="Allow ext-auth ghosts" enabled={extAuthAvailable} {...vprops('extauthghosts')} />
 					<CheckboxInput label="Allow ext-auth web" enabled={extAuthAvailable && settings['extauthweb'] !== undefined} {...vprops('extauthweb')} />
 					<CheckboxInput label="Allow ext-auth web session" enabled={extAuthAvailable && settings['extauthwebsession' !== undefined]} {...vprops('extauthwebsession')} />
+					<CheckboxInput label="Allow ext-auth persist" enabled={extAuthAvailable && settings['extauthpersist' !== undefined]} {...vprops('extauthpersist')} />
 					<CheckboxInput label="Use ext-auth avatars" enabled={extAuthAvailable} {...vprops('extAuthAvatars')} />
 				</Field>
 
