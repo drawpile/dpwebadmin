@@ -149,7 +149,7 @@ export default class extends React.Component {
 					<TextInput {...vprops('idleTimeLimit')} />
 				</Field>
 				<Field>
-					<CheckboxInput label="Allow sessions to persist without users" {...vprops('persistence')} />
+					<CheckboxInput label="Allow anyone to make sessions persist without users" {...vprops('persistence')} />
 					<CheckboxInput label="Archive terminated sessions" {...vprops('archive')} />
 					<CheckboxInput label="Do not include user list in session announcements" {...vprops('privateUserList')} />
 					<CheckboxInput label="Allow custom avatars" {...vprops('customAvatars')} />
