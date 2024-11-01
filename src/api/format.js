@@ -1,12 +1,20 @@
-export function formatTime(seconds) {
-	if(seconds > 60*60) {
+function formatTimeWith(seconds, zeroValue) {
+	if(seconds >= 60*60) {
 		return (seconds / (60*60)).toFixed(2) + " h";
-	} else if(seconds > 60) {
+	} else if(seconds >= 60) {
 		return (seconds / 60).toFixed(2) + " m";
-	} else if(seconds === 0) {
-		return "unlimited";
+	} else if(seconds <= 0) {
+		return zeroValue;
 	}
 	return seconds;
+}
+
+export function formatTime(seconds) {
+	return formatTimeWith(seconds, "unlimited");
+}
+
+export function formatTimeZero(seconds) {
+	return formatTimeWith(seconds, "0");
 }
 
 export function formatFileSize(bytes) {

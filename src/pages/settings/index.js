@@ -10,7 +10,7 @@ import {
 } from '../../components/form.js';
 
 import * as API from '../../api';
-import { formatTime, formatFileSize, formatDays, reformatSettings } from '../../api/format.js';
+import { formatTime, formatTimeZero, formatFileSize, formatDays, reformatSettings } from '../../api/format.js';
 
 export default class extends React.Component {
 	state = {
@@ -61,7 +61,8 @@ export default class extends React.Component {
 				clientTimeout: formatTime,
 				logpurgedays: formatDays,
 				sessionSizeLimit: formatFileSize,
-				autoResetThreshold: formatFileSize
+				autoResetThreshold: formatFileSize,
+				emptySessionLingerTime: formatTimeZero,
 			});
 
 			this.setState({
@@ -148,6 +149,12 @@ export default class extends React.Component {
 				<Field label="Idle time limit">
 					<TextInput {...vprops('idleTimeLimit')} />
 				</Field>
+				{settings['emptySessionLingerTime'] !== undefined &&
+					<Field label="Empty session time limit">
+						<TextInput {...vprops('emptySessionLingerTime')} />
+						<p className="details">How long non-persistent empty sessions continue to exist to give users a chance to reconnect. Zero means they will be terminated immediately.</p>
+					</Field>
+				}
 				<Field>
 					<CheckboxInput label="Allow anyone to make sessions persist without users" {...vprops('persistence')} />
 					<CheckboxInput label="Archive terminated sessions" {...vprops('archive')} />
