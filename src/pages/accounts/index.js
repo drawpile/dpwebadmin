@@ -64,6 +64,9 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 		if(form.websession) {
 			flags.push('WEBSESSION');
 		}
+		if(form.persist) {
+			flags.push('PERSIST');
+		}
 		flags = flags.join(',');
 
 		try {
@@ -113,6 +116,7 @@ const EditAccountModal = ({title, user, closeFunc}) => {
 				<CheckboxInput label="Exempt from bans" {...vprops('banexempt')} />
 				<CheckboxInput label="Can join via WebSocket" {...vprops('web')} />
 				<CheckboxInput label="Can manage WebSocket allowance on sessions" {...vprops('websession')} />
+				<CheckboxInput label="Can persist sessions" {...vprops('persist')} />
 			</Field>
 		</InputGrid>
 		<p>
@@ -146,6 +150,7 @@ export default function() {
 				banexempt: false,
 				web: true,
 				websession: true,
+				persist: false,
 			}
 		});
 	}
@@ -164,6 +169,7 @@ export default function() {
 				banexempt: user.flags.indexOf('BANEXEMPT')>=0,
 				web: user.flags.indexOf('WEB')>=0,
 				websession: user.flags.indexOf('WEBSESSION')>=0,
+				persist: user.flags.indexOf('PERSIST')>=0,
 			}
 		});
 	}
