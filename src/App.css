@@ -183,6 +183,19 @@ tr.offline {
 	outline: none;
 }
 
+.button:disabled {
+	cursor: not-allowed;
+	opacity: 50%;
+}
+
+.button:hover:disabled {
+	filter: none;
+}
+
+.button:active:disabled {
+	transform: none;
+}
+
 .button.danger {
 	background: var(--color-danger);
 }

@@ -14,7 +14,7 @@ import {
 import { ModalContent } from './modals.js';
 
 import { formatFileSize,reformatSettings } from '../../api/format.js';
-import { getSession, changeSession, changeUser, unlistSession } from '../../api/';
+import { getSession, changeSession, changeUser, unlistSession, getChatMessages, sendChatMessage } from '../../api/';
 
 
 const MODAL_SMALL_STYLE = {
@@ -191,16 +191,116 @@ const ListingsBox = ({listings, unlisted, unlist}) => {
 	</div>
 }
 
+function renderOfflineChat(openModal) {
+	return <>
+		<p>Not connected.</p>
+		<button onClick={() => openModal('chatConnect')} className="button">Connect</button>
+	</>
+}
+
+const CHAT_FLAG_SHOUT = 0x1;
+const CHAT_FLAG_ACTION = 0x2;
+const CHAT_FLAG_PIN = 0x4;
+const CHAT_FLAG_ALERT = 0x8;
+
+function renderChatMessage({i: id, n: name, m: message, f: flags}, index) {
+	if(id === undefined) {
+		return <div key={index} className="chat-message chat-message-admin">
+			<span className="chat-message-sender">Admin:</span> {message}
+		</div>
+	} else {
+		if(flags) {
+			if(flags & CHAT_FLAG_PIN) {
+				if(message === '-') {
+					return <div key={index} className="chat-message chat-message-user">
+						<span className="chat-message-sender">{id} {name} <em>unpinned the pinned message</em></span>
+					</div>;
+				} else {
+					return <div key={index} className="chat-message chat-message-user">
+						<span className="chat-message-sender">{id} {name} <em>pinned a message</em>:</span> {message}
+					</div>;
+				}
+			} else if(flags & CHAT_FLAG_ALERT) {
+				return <div key={index} className="chat-message chat-message-user">
+					<span className="chat-message-sender">{id} {name} <em>alerts</em>:</span> {message}
+				</div>;
+			} else if(flags & CHAT_FLAG_SHOUT) {
+				return <div key={index} className="chat-message chat-message-user">
+					<span className="chat-message-sender">{id} {name} <em>shouts</em>:</span> {message}
+				</div>;
+			} else if(flags & CHAT_FLAG_ACTION) {
+				return <div key={index} className="chat-message chat-message-user">
+					<span className="chat-message-sender">{id} {name}</span> <em>{message}</em>
+				</div>;
+			}
+		}
+		return <div key={index} className="chat-message chat-message-user">
+			<span className="chat-message-sender">{id} {name}:</span> {message}
+		</div>;
+	}
+}
+
+function renderOnlineChat(openModal) {
+	return <>
+		<p>Connected.</p>
+		<button onClick={() => openModal('chatDisconnect')} className="button danger">Disconnect</button>
+	</>
+}
+
+function handleChatKey(submitChatMessage, e) {
+	if (e.keyCode === 13 && !(e.ctrlKey || e.shiftKey)) {
+		submitChatMessage(e);
+	}
+}
+
+const ChatBox = ({info, state, loading, chatMessage, setChatMessage, submitChatMessage, openModal}) => {
+	const connected = info || state.connected;
+	return <div className="content-box">
+		<h3>Chat</h3>
+		{state.error && <p><strong>Error:</strong> {state.error}</p>}
+		{connected ? renderOnlineChat(openModal) : renderOfflineChat(openModal)}
+		{loading && 'updating…'}
+		<div id="chat-message-box" className="chat">{(state.messages || []).map(renderChatMessage)}</div>
+		{<form className="chat-grid" onSubmit={submitChatMessage}>
+			<textarea
+				rows="3"
+				className="input-text"
+				placeholder={connected ? 'Write a chat message here…' : 'Chat not connected'}
+				disabled={!connected}
+				value={connected ? chatMessage : ''}
+				onChange={e => setChatMessage(e.target.value)}
+				onKeyDown={e => handleChatKey(submitChatMessage, e)}
+				/>
+			<button
+				type="submit"
+				className="button"
+				disabled={!connected || chatMessage?.trim() === ''}
+			>
+				Send
+			</button>
+		</form>}
+	</div>
+};
+
 export class SessionPage extends React.Component {
 	state = {
 		changed: {},
 		unlisted: {},
+		chat: {
+			connected: false,
+			messages: [],
+			offset: 0,
+			error: null,
+		},
 		modal: {
 			active: null
 		},
+		chatLoading: false,
+		chatMessage: '',
 	};
 	refreshTimer = null;
 	debounceTimer = null;
+	chatTimer = null;
 
 	componentDidMount() {
 		this.refreshList();
@@ -212,12 +312,16 @@ export class SessionPage extends React.Component {
 		if(this.debounceTimer !== null) {
 			clearTimeout(this.debounceTimer);
 		}
+		this.stopChatTimer();
 	}
 
 	refreshList = async () => {
 		try {
 			const session = await getSession(this.props.sessionId);
-			this.setStateSession(session);
+			this.setStateSession(session)
+			if(session.chat && !this.chatTimer) {
+				this.requestChatMessages();
+			}
 		} catch(e) {
 			this.setState({error: e.toString()});
 		}
@@ -276,12 +380,46 @@ export class SessionPage extends React.Component {
 		});
 	}
 
-	closeModal = () => {
-		this.setState({
-			modal: {
-				active: null
-			}
-		});
+	closeModal = (res) => {
+		if(res && this.state.modal.active === 'chatConnect') {
+			this.setState({
+				chat: {
+					...this.state.chat,
+					connected: true,
+					offset: 0,
+					error: null,
+				},
+				modal: {
+					active: null,
+				},
+			});
+			this.handleChatResponse(res);
+			this.startChatTimer();
+		} else if(res && this.state.modal.active === 'chatDisconnect') {
+			this.stopChatTimer();
+			this.setState({
+				chat: {
+					...this.state.chat,
+					connected: false,
+					offset: 0,
+					error: null,
+				},
+				modal: {
+					active: null,
+				},
+				session: {
+					...this.state.session,
+					chat: null,
+				},
+			});
+			this.handleChatResponse(res);
+		} else {
+			this.setState({
+				modal: {
+					active: null,
+				},
+			});
+		}
 	}
 
 	unlist = (listingId) => {
@@ -293,6 +431,79 @@ export class SessionPage extends React.Component {
 		});
 		unlistSession(this.props.sessionId, listingId);
 	};
+
+	scrollChatToBottom() {
+		setTimeout(() => {
+			const elem = document.getElementById('chat-message-box');
+			elem.scrollTop = elem.scrollHeight;
+		}, 100)
+	}
+
+	handleChatResponse(res) {
+		const count = res.messages.length;
+		const offset = res.offset + count;
+		if(offset !== this.state.chat.offset) {
+			this.setState({
+				chat: {
+					...this.state.chat,
+					messages: [...this.state.chat.messages, ...res.messages],
+					offset: res.offset + count,
+				},
+			});
+			this.scrollChatToBottom();
+		}
+	}
+
+	handleChatRequest(req) {
+		this.setState({chatLoading: true});
+		req.then(res => {
+				this.handleChatResponse(res);
+			})
+			.catch(err => {
+				console.error(err);
+				this.setState({
+					chat: {
+						error: `${err}`.replace(/^Error:\s*/, ''),
+					},
+				});
+			})
+			.finally(() => {
+				this.setState({chatLoading: false});
+				this.stopChatTimer();
+				this.startChatTimer();
+			});
+	}
+
+	requestChatMessages() {
+		this.stopChatTimer();
+		this.handleChatRequest(getChatMessages(this.props.sessionId, this.state.chat.offset));
+
+	}
+
+	startChatTimer() {
+		if(!this.chatTimer) {
+			this.chatTimer = setTimeout(this.requestChatMessages.bind(this), 4000);
+		}
+	}
+
+	stopChatTimer() {
+		if(this.chatTimer) {
+			clearTimeout(this.chatTimer);
+			this.chatTimer = null;
+		}
+	}
+
+	submitChatMessage(e) {
+		e.preventDefault();
+		const message = this.state.chatMessage?.trim();
+		if(message !== '') {
+			this.setState({chatMessage: ''});
+			this.stopChatTimer();
+			this.handleChatRequest(sendChatMessage(
+				this.props.sessionId, message, this.state.chat.offset));
+		}
+		return false;
+	}
 
 	render() {
 		const { session, changed, error, modal } = this.state;
@@ -315,6 +526,15 @@ export class SessionPage extends React.Component {
 			{session &&
 				<ListingsBox listings={session.listings} unlisted={this.state.unlisted} unlist={this.unlist} />
 			}
+			{session && session.chat !== undefined &&
+				<ChatBox
+					info={session.chat}
+					state={this.state.chat}
+					loading={this.state.chatLoading}
+					chatMessage={this.state.chatMessage}
+					setChatMessage={chatMessage => this.setState({chatMessage})}
+					submitChatMessage={this.submitChatMessage.bind(this)}
+					openModal={this.openModal} />}
 			<Modal
 				isOpen={modal.active !== null}
 				onRequestClose={this.closeModal}

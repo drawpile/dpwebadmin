@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { changeSessions, changeSession, terminateSession, changeUser, kickUserFromSession } from '../../api';
+import { changeSessions, changeSession, terminateSession, changeUser, kickUserFromSession, connectChat, disconnectChat } from '../../api';
 
 /** Modal building blocks */
 const ModalContext = React.createContext({});
@@ -9,13 +9,18 @@ const ModalContext = React.createContext({});
 const ModalHeader = ({children}) => <h2>{children}</h2>
 const ModalButtons = ({children}) => <p>{children}</p>
 
-const OkButton = ({label, func, children}) => {
+const OkButton = ({label, func, errorFunc, disabled}) => {
 	const ctx = useContext(ModalContext);
 	function clickHandler() {
 		// TODO disable button while processing
-		func().then(ctx.closeFunc);
+		func().then(ctx.closeFunc).catch(err => {
+			console.error("Error", err);
+			if(errorFunc) {
+				errorFunc(err);
+			}
+		});
 	}
-	return <button onClick={clickHandler} className="danger button">{label}</button>
+	return <button onClick={clickHandler} className="danger button" disabled={!!disabled}>{label}</button>
 }
 
 const CancelButton = ({label="Cancel"}) => {
@@ -36,7 +41,7 @@ function SetPasswordModal({targetSetting, title}) {
 	return <>
 		<ModalHeader>Set session {title}</ModalHeader>
 		<input
-			type="password" 
+			type="password"
 			className="input-text"
 			onChange={e => setPasswd(e.target.value)}
 			/>
@@ -114,6 +119,64 @@ function MessageModal() {
 		</>
 }
 
+function ChatConnectModal() {
+	const [message, setMessage] = useState('');
+	const [error, setError] = useState('');
+	const ctx = useContext(ModalContext);
+
+	function connect() {
+		setError('');
+		return connectChat(ctx.sessionId, message);
+	}
+
+	function catchError(err) {
+		setError(`${err}`.replace(/^Error:\s*/, ''));
+	}
+
+	return <>
+		<ModalHeader>Initial message (required):</ModalHeader>
+		{error && <p><strong>Error:</strong> {error}</p>}
+		<textarea
+			className="input-text message-area"
+			rows="5"
+			onChange={e => setMessage(e.target.value)}
+			/>
+		<ModalButtons>
+			<OkButton func={connect} errorFunc={catchError} label="Connect" disabled={message.trim() === ''} />
+			<CancelButton />
+		</ModalButtons>
+	</>
+}
+
+function ChatDisconnectModal() {
+	const [message, setMessage] = useState('');
+	const [error, setError] = useState('');
+	const ctx = useContext(ModalContext);
+
+	function disconnect() {
+		setError('');
+		return disconnectChat(ctx.sessionId, message);
+	}
+
+	function catchError(err) {
+		setError(`${err}`.replace(/^Error:\s*/, ''));
+	}
+
+	return <>
+		<ModalHeader>Disconnect message (optional):</ModalHeader>
+		{error && <p><strong>Error:</strong> {error}</p>}
+		<textarea
+			className="input-text message-area"
+			rows="5"
+			onChange={e => setMessage(e.target.value)}
+			/>
+		<ModalButtons>
+			<OkButton func={disconnect} errorFunc={catchError} label="Disconnect" />
+			<CancelButton />
+		</ModalButtons>
+	</>
+}
+
 export function ModalContent({modal, closeFunc}) {
 	let m;
 	switch(modal.active) {
@@ -122,6 +185,8 @@ export function ModalContent({modal, closeFunc}) {
 	case 'terminate': m = <TerminateSessionModal />; break;
 	case 'message': m = <MessageModal />; break;
 	case 'kick': m = <KickUserModal />; break;
+	case 'chatConnect': m = <ChatConnectModal />; break;
+	case 'chatDisconnect': m = <ChatDisconnectModal />; break;
 	default: return null;
 	}
 

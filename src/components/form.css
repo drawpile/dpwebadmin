@@ -47,6 +47,10 @@
 	width: 90%;
 }
 
+.input-text.fullwidth, .input-readonly.fullwidth {
+	width: 100%;
+}
+
 .input-text[type=number] {
 	text-align: right;
 	width: 4em;
@@ -56,3 +60,40 @@
 	display: block;
 }
 
+.chat {
+	background-color: #eff0f1;
+	border: 1px solid #7f8c8d;
+	height: 20em;
+	margin-bottom: 0.5em;
+	overflow-y: scroll;
+	padding: 0.5em;
+}
+
+.chat-message {
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	white-space: pre-wrap;
+}
+
+.chat-message-admin {
+	font-style: italic;
+}
+
+.chat-message-admin > .chat-message-sender {
+	text-decoration: underline;
+}
+
+.chat-message-user > .chat-message-sender {
+	font-weight: bold;
+}
+
+.chat-grid {
+	display: grid;
+	grid-template-columns: auto minmax(4em, 10%);
+	grid-gap: 0.5em;
+}
+
+.chat-grid > button.small {
+	margin: 0;
+	height: 100%;
+}

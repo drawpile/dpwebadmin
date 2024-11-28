@@ -28,10 +28,19 @@ async function doSend(path, method, body, isText = false) {
 		body: JSON.stringify(body)
 	});
 
-	if(response.status === 400) {
-		const body = await response.json();
-		if(body.message !== undefined)
-			throw new Error(body.message);
+	if(response.status >= 400 && response.status < 500) {
+		let message;
+		try {
+			const body = await response.json();
+			if(body.message !== undefined) {
+				message = body.message;
+			}
+		} catch(e) {
+			// Nothing.
+		}
+		if(message !== undefined) {
+			throw new Error(message);
+		}
 	}
 
 	if(!response.ok) {
@@ -49,9 +58,27 @@ async function doDelete(path) {
 			'X-Requested-With': 'XMLHttpRequest'
 		},
 	});
+
+	if(response.status >= 400 && response.status < 500) {
+		let message;
+		try {
+			const body = await response.json();
+			if(body.message !== undefined) {
+				message = body.message;
+			}
+		} catch(e) {
+			// Nothing.
+		}
+		if(message !== undefined) {
+			throw new Error(message);
+		}
+	}
+
 	if(!response.ok) {
 		throw new Error(response.statusText);
 	}
+
+	return await response.json();
 }
 
 export async function tryLogin(username, password) {
@@ -96,6 +123,11 @@ export function getUsers() { return doGet('/users/'); }
 export function kickUserByUid(uid) { return doDelete(`/users/${uid}`); }
 export function changeUser(sessionId, userId, changes) { return doSend(`/sessions/${sessionId}/${userId}`, 'PUT', changes); }
 export function kickUserFromSession(sessionId, userId) { return doDelete(`/sessions/${sessionId}/${userId}`); }
+
+export function connectChat(sessionId, message) { return doSend(`/sessions/${encodeURIComponent(sessionId)}/chat`, 'POST', {message}); }
+export function disconnectChat(sessionId, message) { return doDelete(`/sessions/${encodeURIComponent(sessionId)}/chat?message=${encodeURIComponent(message)}`); }
+export function sendChatMessage(sessionId, message, offset) { return doSend(`/sessions/${encodeURIComponent(sessionId)}/chat`, 'PUT', {message, offset}); }
+export function getChatMessages(sessionId, offset) { return doGet(`/sessions/${encodeURIComponent(sessionId)}/chat?offset=${encodeURIComponent(`${offset}`)}`); }
 
 export function getAccounts() { return doGet('/accounts/'); }
 export function createAccount(account) { return doSend('/accounts/', 'POST', account); }
