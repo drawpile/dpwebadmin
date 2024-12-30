@@ -35,23 +35,37 @@ const SessionTable = ({sessions}) => {
 			</tr>
 		</thead>
 		<tbody>
-			{sessions.map(s => <tr key={s.id}>
-				<td><Link to={`${path}${s.id}`}>{s.title || "(untitled)"}</Link></td>
-				<td><Link to={`${path}${s.id}`}><abbr title={s.id}>{s.id.substr(0, 8)}...</abbr></Link></td>
-				<td><Link to={`${path}${s.id}`}>{s.alias}</Link></td>
-				<td>{s.userCount} / {s.maxUserCount}</td>
-				<td>
-					{s.hasPassword && <span title="Password">🔒</span>}
-					{s.closed && <span title="Closed to new users">🚪</span>}
-					{s.authOnly && <span title="Registered users only">👥</span>}
-					{s.persistent && <span title="Persists without users">💾</span>}
-					{s.nsfm && <span title="Not suitable for minors (NSFM)">🔞</span>}
-					{s.idleOverride && <span title="Ignores idle timeout">⏰</span>}
-					{s.allowWeb && <span title="Allow joining via WebSocket">🌐</span>}
-				</td>
-				<td>{(s.size / (1024 *1024)).toFixed(2)} MB</td>
-				<td>{s.startTime}</td>
-			</tr>)}
+			{sessions.map(s => {
+				const title = s.title || "(untitled)";
+				return <tr key={s.id}>
+					<td>
+						{s.id ? <Link to={`${path}${s.id}`}>{title}</Link> : title}
+					</td>
+					<td>
+						{s.id ? <Link to={`${path}${s.id}`}><abbr title={s.id}>{s.id.substr(0, 8)}...</abbr></Link> : "(template)"}
+					</td>
+					<td>
+						{s.id ? <Link to={`${path}${s.id}`}>{s.alias}</Link> : s.alias}
+					</td>
+					<td>
+						{s.userCount || 0} / {s.maxUserCount || 254}
+					</td>
+					<td>
+						{s.hasPassword && <span title="Password">🔒</span>}
+						{s.closed && <span title="Closed to new users">🚪</span>}
+						{s.authOnly && <span title="Registered users only">👥</span>}
+						{s.persistent && <span title="Persists without users">💾</span>}
+						{s.nsfm && <span title="Not suitable for minors (NSFM)">🔞</span>}
+						{s.idleOverride && <span title="Ignores idle timeout">⏰</span>}
+						{s.allowWeb && <span title="Allow joining via WebSocket">🌐</span>}
+					</td>
+					<td>
+						{((s.size || 0) / (1024 * 1024)).toFixed(2)} MB</td>
+					<td>
+						{s.startTime || "not started"}
+					</td>
+				</tr>;
+			})}
 		</tbody>
 	</table>
 }
