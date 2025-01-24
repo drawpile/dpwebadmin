@@ -60,6 +60,17 @@
 	display: block;
 }
 
+.form-row {
+	display: flex;
+	margin-top: 1em;
+	max-width: 50vw;
+}
+
+.form-row > .form-field {
+	margin-left: 1em;
+	flex-grow: 1;
+}
+
 .chat {
 	background-color: #eff0f1;
 	border: 1px solid #7f8c8d;

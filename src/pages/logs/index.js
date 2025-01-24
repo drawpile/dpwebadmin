@@ -25,23 +25,97 @@ const LogListTable = ({logs}) => {
 			</tr>)}
 		</tbody>
 	</table>
-}
+};
 
-export default function() {
-	const [logs, setLogs] = useState([]);
-	const [error, setError] = useState(null);
-
-	function fetchLogList() {
-		getLogs().then(setLogs).catch(setError);
+const Filters = ({inputs, setInputs, setParams, setPage}) => {
+	function submitFilters(e) {
+		e.preventDefault();
+		setParams({...inputs});
+		setPage(1);
+		return false;
 	}
 
-	useEffect(fetchLogList, []);
+	return <form>
+		<label className="form-row">
+			Session ID:
+			<input className="form-field input-text" type="text" onChange={e => setInputs({...inputs, session: e.target.value})}></input>
+		</label>
+		<label className="form-row">
+			User:
+			<input className="form-field input-text" type="text" onChange={e => setInputs({...inputs, user: e.target.value})}></input>
+		</label>
+		<label className="form-row">
+			Message:
+			<input className="form-field input-text" type="text" onChange={e => setInputs({...inputs, contains: e.target.value})}></input>
+		</label>
+		<button type="submit" className="button" onClick={submitFilters}>Filter</button>
+	</form>
+};
 
-	return <div className="content-box">
-		<h2>Server logs</h2>
-		{error && <p className="alert-box">{error}</p>}
-		{logs && <LogListTable
-			logs={logs}
-			/>}
-	</div>
-}	
+const Pagination = ({page, setPage}) => {
+	function firstPage(e) {
+		e.preventDefault();
+		setPage(1);
+		return false;
+	}
+
+	function prevPage(e) {
+		e.preventDefault();
+		setPage(page - 1);
+		return false;
+	}
+
+	function nextPage(e) {
+		e.preventDefault();
+		setPage(page + 1);
+		return false;
+	}
+
+	return <>
+		{page > 1 ? <a href="#" onClick={firstPage}>« First</a> : '« First'}
+		{' | '}
+		{page > 1 ? <a href="#" onClick={prevPage}>‹ Previous</a> : '‹ Previous'}
+		{' | '}Page {page}{' | '}
+		<a href="#" onClick={nextPage}>Next ›</a>
+	</>;
+};
+
+export default function() {
+	const [page, setPage] = useState(1);
+	const [logs, setLogs] = useState([]);
+	const [error, setError] = useState(null);
+	const [busy, setBusy] = useState(false);
+	const [inputs, setInputs] = useState({
+		session: '',
+		user: '',
+		contains: '',
+	});
+	const [params, setParams] = useState({
+		session: '',
+		user: '',
+		contains: '',
+	});
+
+	function fetchLogList() {
+		setBusy(true);
+		getLogs(page, params.session, params.user, params.contains)
+			.then(setLogs).catch(setError).finally(setBusy.bind(null, false));
+	}
+
+	useEffect(fetchLogList, [page, params]);
+
+	return <>
+		<div className="content-box">
+			<h2>Server logs</h2>
+			{error && <p className="alert-box">{error}</p>}
+			<Filters inputs={inputs} setInputs={setInputs} setParams={setParams} setPage={setPage}/>
+		</div>
+		<div className="content-box">
+			<Pagination page={page} setPage={setPage}/>
+			<hr/>
+			{busy ? 'Loading…' : <LogListTable logs={logs} />}
+			<hr/>
+			<Pagination page={page} setPage={setPage}/>
+		</div>
+	</>;
+}

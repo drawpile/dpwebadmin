@@ -142,4 +142,4 @@ export function getExtBanList() { return doGet('/extbans/'); }
 export function refreshExtBans() { return doSend('/extbans/refresh', 'POST', {}); }
 export function changeExtBan(id, changes) { return doSend(`/extbans/${id}`, 'PUT', changes, true); }
 
-export function getLogs() { return doGet('/log/'); }
+export function getLogs(page, session, user, contains) { return doGet(`/log/?page=${encodeURIComponent(page - 1)}&session=${encodeURIComponent(session.trim())}&user=${encodeURIComponent(user.trim())}&contains=${encodeURIComponent(contains.trim())}`); }
