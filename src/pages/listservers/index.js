@@ -78,13 +78,13 @@ export default function() {
 				updateFunc={updateRow}
 				addFunc={addRow}
 				/>
-			<p><label className="input-checkbox">
+			<p><div className="input-checkbox"><label>
 					<input type="checkbox"
 					checked={whitelist.enabled}
 					onChange={e => setWhitelist({...whitelist, enabled: e.target.checked})}
 					/>
 					<span>Use whitelist</span>
-				</label>
+				</label></div>
 			</p>
 		</>}
 

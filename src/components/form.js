@@ -59,13 +59,15 @@ export const ReadOnly = ({long, value}) => (
 );
 
 export const CheckboxInput = ({value, enabled=true, update, pending, label}) => (
-	<label className={classNames({"input-checkbox": true, "disabled": !enabled, pending})}>
-		<input type="checkbox"
-		checked={value}
-		disabled={!enabled}
-		onChange={e => update(e.target.checked)}
-		/>
-		<span>{label}</span>
-	</label>
+	<div className="input-checkbox">
+		<label className={classNames({"disabled": !enabled, pending})}>
+			<input type="checkbox"
+			checked={value}
+			disabled={!enabled}
+			onChange={e => update(e.target.checked)}
+			/>
+			<span>{label}</span>
+		</label>
+	</div>
 );
 
