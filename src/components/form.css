@@ -60,6 +60,10 @@
 	display: block;
 }
 
+.input-checkbox > label {
+	cursor: pointer;
+}
+
 .form-row {
 	display: flex;
 	margin-top: 1em;
