@@ -107,7 +107,7 @@ export default function() {
 	return <>
 		<div className="content-box">
 			<h2>Server logs</h2>
-			{error && <p className="alert-box">{error}</p>}
+			{error && <p className="alert-box">{error.toString()}</p>}
 			<Filters inputs={inputs} setInputs={setInputs} setParams={setParams} setPage={setPage}/>
 		</div>
 		<div className="content-box">

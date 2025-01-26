@@ -143,3 +143,6 @@ export function refreshExtBans() { return doSend('/extbans/refresh', 'POST', {})
 export function changeExtBan(id, changes) { return doSend(`/extbans/${id}`, 'PUT', changes, true); }
 
 export function getLogs(page, session, user, contains) { return doGet(`/log/?page=${encodeURIComponent(page - 1)}&session=${encodeURIComponent(session.trim())}&user=${encodeURIComponent(user.trim())}&contains=${encodeURIComponent(contains.trim())}`); }
+
+export function getLocks() { return doGet('/locks/'); }
+export function putLocks(sections, password) { return doSend('/locks/', 'PUT', {sections, password}); }

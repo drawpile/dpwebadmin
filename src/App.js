@@ -16,6 +16,7 @@ import BanListPage from './pages/bans/';
 import ExtBanListPage from './pages/extbans/';
 import AccountsPage from './pages/accounts/';
 import LogsPage from './pages/logs/';
+import LocksPage from './pages/locks/';
 
 import './App.css';
 
@@ -34,6 +35,7 @@ function App() {
 					<li><NavLink to="/extbans/">Extbans</NavLink></li>
 					<li><NavLink to="/accounts/">Accounts</NavLink></li>
 					<li><NavLink to="/logs/">Logs</NavLink></li>
+					<li><NavLink to="/locks/">Lock</NavLink></li>
 				</ul>
 			</nav>
 		</header>
@@ -49,6 +51,7 @@ function App() {
 				<Route path="/extbans/"><ExtBanListPage /></Route>
 				<Route path="/accounts/"><AccountsPage /></Route>
 				<Route path="/logs/"><LogsPage /></Route>
+				<Route path="/locks/"><LocksPage /></Route>
 			</Switch>
 		</section>
 	</Router>
