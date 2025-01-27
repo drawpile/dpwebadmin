@@ -134,7 +134,7 @@ export function createAccount(account) { return doSend('/accounts/', 'POST', acc
 export function changeAccount(accountId, changes) { return doSend(`/accounts/${accountId}`, 'PUT', changes); }
 export function deleteAccount(accountId) { return doDelete(`/accounts/${accountId}`); }
 
-export function getBanList() { return doGet('/banlist/'); }
+export function getBanList() { return doGet('/banlist/?v=2'); }
 export function addBan(ban) { return doSend('/banlist/', 'POST', ban); }
 export function deleteBan(id) { return doDelete(`/banlist/${id}`); }
 

@@ -8,7 +8,7 @@ import {
   IntegerInput,
 } from "../../components/form.js";
 
-const BanListTable = ({ bans, deleteBanFunc }) => {
+const BanListTable = ({ bans, deleteBanFunc, locked }) => {
   return (
     <table className="table">
       <thead>
@@ -34,6 +34,7 @@ const BanListTable = ({ bans, deleteBanFunc }) => {
               <button
                 onClick={() => deleteBanFunc(b.id)}
                 className="small danger button"
+                disabled={locked}
               >
                 Delete
               </button>
@@ -103,12 +104,23 @@ const AddBanModal = ({ closeFunc }) => {
 
 export default function () {
   const [bans, setBans] = useState([]);
+  const [locked, setLocked] = useState(false);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   function refreshBanList() {
-    getBanList().then(setBans).catch(setError);
+    getBanList()
+      .then((result) => {
+        if (Array.isArray(result)) {
+          setBans(result);
+          setLocked(false);
+        } else {
+          setBans(result.bans);
+          setLocked(result._locked);
+        }
+      })
+      .catch(setError);
   }
 
   useEffect(refreshBanList, []);
@@ -123,10 +135,21 @@ export default function () {
   return (
     <div className="content-box">
       <h2>IP bans</h2>
-      {error && <p className="alert-box">{error}</p>}
-      {bans && <BanListTable bans={bans} deleteBanFunc={setConfirmDelete} />}
+      {error && <p className="alert-box">{error.toString()}</p>}
+      {locked && <p className="locked-box">This section is locked.</p>}
+      {bans && (
+        <BanListTable
+          bans={bans}
+          deleteBanFunc={setConfirmDelete}
+          locked={locked}
+        />
+      )}
       <p>
-        <button onClick={(e) => setEditing(true)} className="button">
+        <button
+          onClick={(e) => setEditing(true)}
+          className="button"
+          disabled={locked}
+        >
           Add
         </button>
       </p>
