@@ -111,6 +111,10 @@ dd {
 	border-radius: 3px;
 }
 
+.alert-box::before {
+	content: "⚠️ ";
+}
+
 /** TABLES **/
 table.table {
 	width: 100%;
