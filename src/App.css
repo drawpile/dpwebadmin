@@ -115,6 +115,18 @@ dd {
 	content: "⚠️ ";
 }
 
+.locked-box {
+	padding: 6px;
+
+	background: #232629;
+	color: #fff;
+	border-radius: 3px;
+}
+
+.locked-box::before {
+	content: "🔒 ";
+}
+
 /** TABLES **/
 table.table {
 	width: 100%;

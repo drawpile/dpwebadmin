@@ -22,6 +22,7 @@ export default class extends React.Component {
     changed: {},
     fetching: false,
     error: null,
+    locked: false,
   };
 
   debounceTimer = null;
@@ -73,11 +74,13 @@ export default class extends React.Component {
         settings,
         fetching: false,
         error: null,
+        locked: settings._locked,
       });
     } catch (e) {
       this.setState({
         fetching: false,
         error: e.toString(),
+        locked: false,
       });
     }
   }
@@ -93,14 +96,16 @@ export default class extends React.Component {
 
   render() {
     const settings = this.state.settings;
+    const locked = this.state.locked;
 
     let inputGrid = null;
     if (settings !== null) {
       const changed = this.state.changed;
-      const vprops = (name) => ({
+      const vprops = (name, enabled = true) => ({
         value: settings[name],
         update: (value) => this.updateSetting(name, value),
         pending: changed[name] !== undefined,
+        enabled: enabled && !locked,
       });
       const abuseReportAvailable = settings["abusereport"] !== undefined;
       const extAuthAvailable = settings["extauth"] !== undefined;
@@ -129,18 +134,24 @@ export default class extends React.Component {
             />
             <CheckboxInput
               label="Allow anyone to join via WebSocket"
-              enabled={settings["allowGuestWeb"] !== undefined}
-              {...vprops("allowGuestWeb")}
+              {...vprops(
+                "allowGuestWeb",
+                settings["allowGuestWeb"] !== undefined
+              )}
             />
             <CheckboxInput
               label="Allow anyone to manage WebSocket allowance on sessions"
-              enabled={settings["allowGuestWebSession"] !== undefined}
-              {...vprops("allowGuestWebSession")}
+              {...vprops(
+                "allowGuestWebSession",
+                settings["allowGuestWebSession"] !== undefined
+              )}
             />
             <CheckboxInput
               label="Automatically allow WebSockets on passworded sessions, disallow on non-passworded ones"
-              enabled={settings["passwordDependentWebSession"] !== undefined}
-              {...vprops("passwordDependentWebSession")}
+              {...vprops(
+                "passwordDependentWebSession",
+                settings["passwordDependentWebSession"] !== undefined
+              )}
             />
           </Field>
           <Field label="Server rules">
@@ -226,85 +237,71 @@ export default class extends React.Component {
           <Field>
             <CheckboxInput
               label="Enable"
-              enabled={abuseReportAvailable}
-              {...vprops("abusereport")}
+              {...vprops("abusereport", abuseReportAvailable)}
             />
           </Field>
           <Field label="Auth token">
-            <TextInput
-              long
-              enabled={abuseReportAvailable}
-              {...vprops("reporttoken")}
-            />
+            <TextInput long {...vprops("reporttoken", abuseReportAvailable)} />
           </Field>
 
           <Caption>External authentication</Caption>
           <Field>
             <CheckboxInput
               label="Enable"
-              enabled={extAuthAvailable}
-              {...vprops("extauth")}
+              {...vprops("extauth", extAuthAvailable)}
             />
           </Field>
           <Field label="Validation key">
-            <TextInput
-              long
-              enabled={extAuthAvailable}
-              {...vprops("extauthkey")}
-            />
+            <TextInput long {...vprops("extauthkey", extAuthAvailable)} />
           </Field>
           <Field label="User group">
-            <TextInput enabled={extAuthAvailable} {...vprops("extauthgroup")} />
+            <TextInput {...vprops("extauthgroup", extAuthAvailable)} />
           </Field>
           <Field>
             <CheckboxInput
               label="Permit guest logins when ext-auth server is unreachable"
-              enabled={extAuthAvailable}
-              {...vprops("extauthfallback")}
+              {...vprops("extauthfallback", extAuthAvailable)}
             />
             <CheckboxInput
               label="Allow ext-auth moderators"
-              enabled={extAuthAvailable}
-              {...vprops("extauthmod")}
+              {...vprops("extauthmod", extAuthAvailable)}
             />
             <CheckboxInput
               label="Allow ext-auth hosts"
-              enabled={extAuthAvailable}
-              {...vprops("extauthhost")}
+              {...vprops("extauthhost", extAuthAvailable)}
             />
             <CheckboxInput
               label="Allow ext-auth ban exemptions"
-              enabled={extAuthAvailable}
-              {...vprops("extauthbanexempt")}
+              {...vprops("extauthbanexempt", extAuthAvailable)}
             />
             <CheckboxInput
               label="Allow ext-auth ghosts"
-              enabled={extAuthAvailable}
-              {...vprops("extauthghosts")}
+              {...vprops("extauthghosts", extAuthAvailable)}
             />
             <CheckboxInput
               label="Allow ext-auth web"
-              enabled={extAuthAvailable && settings["extauthweb"] !== undefined}
-              {...vprops("extauthweb")}
+              {...vprops(
+                "extauthweb",
+                extAuthAvailable && settings["extauthweb"] !== undefined
+              )}
             />
             <CheckboxInput
               label="Allow ext-auth web session"
-              enabled={
+              {...vprops(
+                "extauthwebsession",
                 extAuthAvailable && settings["extauthwebsession"] !== undefined
-              }
-              {...vprops("extauthwebsession")}
+              )}
             />
             <CheckboxInput
               label="Allow ext-auth persist"
-              enabled={
+              {...vprops(
+                "extauthpersist",
                 extAuthAvailable && settings["extauthpersist"] !== undefined
-              }
-              {...vprops("extauthpersist")}
+              )}
             />
             <CheckboxInput
               label="Use ext-auth avatars"
-              enabled={extAuthAvailable}
-              {...vprops("extAuthAvatars")}
+              {...vprops("extAuthAvatars", extAuthAvailable)}
             />
           </Field>
 
@@ -343,6 +340,7 @@ export default class extends React.Component {
       <div className="content-box">
         <h2>Settings</h2>
         {this.state.error && <p className="alert-box">{this.state.error}</p>}
+        {locked && <p className="locked-box">This section is locked.</p>}
         {inputGrid}
       </div>
     );
