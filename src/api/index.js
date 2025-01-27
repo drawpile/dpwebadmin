@@ -119,7 +119,7 @@ export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'P
 export function terminateSession(id) { return doDelete(`/sessions/${id}`); }
 export function unlistSession(sessionId, listingId) { return doDelete(`/sessions/${sessionId}/listing/${listingId}`); }
 
-export function getUsers() { return doGet('/users/'); }
+export function getUsers() { return doGet('/users/?v=2'); }
 export function kickUserByUid(uid) { return doDelete(`/users/${uid}`); }
 export function changeUser(sessionId, userId, changes) { return doSend(`/sessions/${sessionId}/${userId}`, 'PUT', changes); }
 export function kickUserFromSession(sessionId, userId) { return doDelete(`/sessions/${sessionId}/${userId}`); }
