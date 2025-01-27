@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getListserverWhitelist, setListserverWhitelist } from "../../api";
 
-const WhitelistTable = ({ whitelist, deleteFunc, updateFunc, addFunc }) => {
+const WhitelistTable = ({
+  whitelist,
+  deleteFunc,
+  updateFunc,
+  addFunc,
+  locked,
+}) => {
   return (
     <table className="table">
       <thead>
@@ -19,12 +25,14 @@ const WhitelistTable = ({ whitelist, deleteFunc, updateFunc, addFunc }) => {
                 type="input"
                 value={item}
                 onChange={(e) => updateFunc(e.target.value, row)}
+                disabled={locked}
               />
             </td>
             <td>
               <button
                 onClick={() => deleteFunc(row)}
                 className="small danger button"
+                disabled={locked}
               >
                 Delete
               </button>
@@ -34,7 +42,11 @@ const WhitelistTable = ({ whitelist, deleteFunc, updateFunc, addFunc }) => {
         <tr>
           <td></td>
           <td>
-            <button onClick={addFunc} className="small button">
+            <button
+              onClick={addFunc}
+              className="small button"
+              disabled={locked}
+            >
               Add
             </button>
           </td>
@@ -86,10 +98,12 @@ export default function () {
     });
   }
 
+  const locked = whitelist?._locked;
   return (
     <div className="content-box">
       <h2>List server URL whitelist</h2>
       {error && <p className="alert-box">{error.toString()}</p>}
+      {locked && <p className="locked-box">This section is locked.</p>}
       {whitelist && (
         <>
           <WhitelistTable
@@ -97,26 +111,31 @@ export default function () {
             deleteFunc={removeRow}
             updateFunc={updateRow}
             addFunc={addRow}
+            locked={locked}
           />
-          <p>
-            <div className="input-checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={whitelist.enabled}
-                  onChange={(e) =>
-                    setWhitelist({ ...whitelist, enabled: e.target.checked })
-                  }
-                />
-                <span>Use whitelist</span>
-              </label>
-            </div>
-          </p>
+          <hr />
+          <div className="input-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                checked={whitelist.enabled}
+                onChange={(e) =>
+                  setWhitelist({ ...whitelist, enabled: e.target.checked })
+                }
+                disabled={locked}
+              />
+              <span>Use whitelist</span>
+            </label>
+          </div>
         </>
       )}
 
       <p>
-        <button onClick={saveChanges} className="button">
+        <button
+          onClick={saveChanges}
+          className="button"
+          disabled={saving || locked}
+        >
           {saving ? "Saving..." : "Save changes"}
         </button>
       </p>

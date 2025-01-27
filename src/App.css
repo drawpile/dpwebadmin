@@ -52,6 +52,14 @@ dd {
 	font-size: small;
 }
 
+hr {
+	border: 0;
+	border-top: 1px solid #4d4d4d;
+	height: 0;
+	margin-bottom: 1em;
+	margin-top: 1em;
+}
+
 /** HEADER **/
 #header, #content {
 	padding: var(--header-padding);
