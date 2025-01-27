@@ -129,7 +129,7 @@ export function disconnectChat(sessionId, message) { return doDelete(`/sessions/
 export function sendChatMessage(sessionId, message, offset) { return doSend(`/sessions/${encodeURIComponent(sessionId)}/chat`, 'PUT', {message, offset}); }
 export function getChatMessages(sessionId, offset) { return doGet(`/sessions/${encodeURIComponent(sessionId)}/chat?offset=${encodeURIComponent(`${offset}`)}`); }
 
-export function getAccounts() { return doGet('/accounts/'); }
+export function getAccounts() { return doGet('/accounts/?v=2'); }
 export function createAccount(account) { return doSend('/accounts/', 'POST', account); }
 export function changeAccount(accountId, changes) { return doSend(`/accounts/${accountId}`, 'PUT', changes); }
 export function deleteAccount(accountId) { return doDelete(`/accounts/${accountId}`); }

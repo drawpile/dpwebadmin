@@ -13,7 +13,12 @@ import {
   CheckboxInput,
 } from "../../components/form.js";
 
-const AccountListTable = ({ accounts, editAccountFunc, deleteAccountFunc }) => {
+const AccountListTable = ({
+  accounts,
+  editAccountFunc,
+  deleteAccountFunc,
+  locked,
+}) => {
   return (
     <table className="table">
       <thead>
@@ -34,12 +39,14 @@ const AccountListTable = ({ accounts, editAccountFunc, deleteAccountFunc }) => {
               <button
                 onClick={() => editAccountFunc(a)}
                 className="small button"
+                disabled={locked}
               >
                 Edit
               </button>
               <button
                 onClick={() => deleteAccountFunc(a.id)}
                 className="small danger button"
+                disabled={locked}
               >
                 Delete
               </button>
@@ -156,12 +163,23 @@ const EditAccountModal = ({ title, user, closeFunc }) => {
 
 export default function () {
   const [accounts, setAccounts] = useState([]);
+  const [locked, setLocked] = useState(false);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   function refreshAccountList() {
-    getAccounts().then(setAccounts).catch(setError);
+    getAccounts()
+      .then((result) => {
+        if (Array.isArray(result)) {
+          setAccounts(result);
+          setLocked(false);
+        } else {
+          setAccounts(result.accounts);
+          setLocked(result._locked);
+        }
+      })
+      .catch(setError);
   }
 
   useEffect(refreshAccountList, []);
@@ -203,25 +221,25 @@ export default function () {
   }
 
   function removeAccount() {
-    deleteAccount(confirmDelete)
-      .then(refreshAccountList)
-      .catch((e) => setError(e.toString()));
+    deleteAccount(confirmDelete).then(refreshAccountList).catch(setError);
     setConfirmDelete(null);
   }
 
   return (
     <div className="content-box">
       <h2>User accounts</h2>
-      {error && <p className="alert-box">{error}</p>}
+      {error && <p className="alert-box">{error.toString()}</p>}
+      {locked && <p className="locked-box">This section is locked.</p>}
       {accounts && (
         <AccountListTable
           accounts={accounts}
           editAccountFunc={editAccount}
           deleteAccountFunc={setConfirmDelete}
+          locked={locked}
         />
       )}
       <p>
-        <button onClick={addAccount} className="button">
+        <button onClick={addAccount} className="button" disabled={locked}>
           Create
         </button>
       </p>
@@ -243,10 +261,18 @@ export default function () {
       >
         <h2>Really delete?</h2>
         <p>
-          <button onClick={removeAccount} className="danger button">
+          <button
+            onClick={removeAccount}
+            className="danger button"
+            disabled={locked}
+          >
             Delete
           </button>
-          <button onClick={(e) => setConfirmDelete(null)} className="button">
+          <button
+            onClick={(e) => setConfirmDelete(null)}
+            className="button"
+            disabled={locked}
+          >
             Cancel
           </button>
         </p>
