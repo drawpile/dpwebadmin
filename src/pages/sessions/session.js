@@ -31,7 +31,7 @@ const MODAL_SMALL_STYLE = {
   },
 };
 
-const SessionInfo = ({ session, openModal, vprops }) => {
+const SessionInfo = ({ session, openModal, vprops, locked }) => {
   return (
     <div>
       <InputGrid>
@@ -94,21 +94,29 @@ const SessionInfo = ({ session, openModal, vprops }) => {
           />
           <CheckboxInput
             label=" 🌐 Allow joining via WebSocket"
-            enabled={session.allowWeb !== undefined}
-            {...vprops("allowWeb")}
+            {...vprops("allowWeb", session.allowWeb !== undefined)}
           />
         </Field>
       </InputGrid>
       <p>
-        <button onClick={(e) => openModal("setPassword")} className="button">
+        <button
+          onClick={(e) => openModal("setPassword")}
+          className="button"
+          disabled={locked}
+        >
           {session.hasPassword ? "Change" : "Set"} password
         </button>
-        <button onClick={(e) => openModal("setOpword")} className="button">
+        <button
+          onClick={(e) => openModal("setOpword")}
+          className="button"
+          disabled={locked}
+        >
           {session.hasOpword ? "Change" : "Set"} opword
         </button>
         <button
           onClick={(e) => openModal("terminate")}
           className="danger button"
+          disabled={locked}
         >
           Terminate
         </button>
@@ -178,7 +186,7 @@ const StatusBox = ({
   );
 };
 
-const UserListBox = ({ sessionId, users, openModal }) => {
+const UserListBox = ({ sessionId, users, openModal, locked }) => {
   function changeUserOp(user) {
     changeUser(sessionId, user.id, { op: !user.op });
   }
@@ -220,6 +228,7 @@ const UserListBox = ({ sessionId, users, openModal }) => {
                       <button
                         onClick={() => changeUserOp(u)}
                         className="small button"
+                        disabled={locked}
                       >
                         {u.op ? "De-op" : "Op"}
                       </button>
@@ -228,6 +237,7 @@ const UserListBox = ({ sessionId, users, openModal }) => {
                       <button
                         onClick={() => changeUserTrusted(u)}
                         className="small button"
+                        disabled={locked}
                       >
                         {u.trusted ? "Untrust" : "Trust"}
                       </button>
@@ -237,6 +247,7 @@ const UserListBox = ({ sessionId, users, openModal }) => {
                         openModal("message", { userName: u.name, userId: u.id })
                       }
                       className="small button"
+                      disabled={locked}
                     >
                       Message
                     </button>
@@ -245,6 +256,7 @@ const UserListBox = ({ sessionId, users, openModal }) => {
                         openModal("kick", { userName: u.name, userId: u.id })
                       }
                       className="small danger button"
+                      disabled={locked}
                     >
                       Kick
                     </button>
@@ -256,7 +268,11 @@ const UserListBox = ({ sessionId, users, openModal }) => {
         </tbody>
       </table>
       <p>
-        <button onClick={() => openModal("message")} className="button">
+        <button
+          onClick={() => openModal("message")}
+          className="button"
+          disabled={locked}
+        >
           Message all
         </button>
       </p>
@@ -264,7 +280,7 @@ const UserListBox = ({ sessionId, users, openModal }) => {
   );
 };
 
-const ListingsBox = ({ listings, unlisted, unlist }) => {
+const ListingsBox = ({ listings, unlisted, unlist, locked }) => {
   return (
     <div className="content-box">
       <h3>Listings</h3>
@@ -292,6 +308,7 @@ const ListingsBox = ({ listings, unlisted, unlist }) => {
                   <button
                     onClick={() => unlist(l.id)}
                     className="small danger button"
+                    disabled={locked}
                   >
                     Unlist
                   </button>
@@ -305,11 +322,15 @@ const ListingsBox = ({ listings, unlisted, unlist }) => {
   );
 };
 
-function renderOfflineChat(openModal) {
+function renderOfflineChat(openModal, locked) {
   return (
     <>
       <p>Not connected.</p>
-      <button onClick={() => openModal("chatConnect")} className="button">
+      <button
+        onClick={() => openModal("chatConnect")}
+        className="button"
+        disabled={locked}
+      >
         Connect
       </button>
     </>
@@ -389,13 +410,14 @@ function renderChatMessage({ i: id, n: name, m: message, f: flags }, index) {
   }
 }
 
-function renderOnlineChat(openModal) {
+function renderOnlineChat(openModal, locked) {
   return (
     <>
       <p>Connected.</p>
       <button
         onClick={() => openModal("chatDisconnect")}
         className="button danger"
+        disabled={locked}
       >
         Disconnect
       </button>
@@ -417,6 +439,7 @@ const ChatBox = ({
   setChatMessage,
   submitChatMessage,
   openModal,
+  locked,
 }) => {
   const connected = info || state.connected;
   return (
@@ -427,7 +450,9 @@ const ChatBox = ({
           <strong>Error:</strong> {state.error}
         </p>
       )}
-      {connected ? renderOnlineChat(openModal) : renderOfflineChat(openModal)}
+      {connected
+        ? renderOnlineChat(openModal, locked)
+        : renderOfflineChat(openModal, locked)}
       {loading && "updating…"}
       <div id="chat-message-box" className="chat">
         {(state.messages || []).map(renderChatMessage)}
@@ -440,7 +465,7 @@ const ChatBox = ({
             placeholder={
               connected ? "Write a chat message here…" : "Chat not connected"
             }
-            disabled={!connected}
+            disabled={!connected || locked}
             value={connected ? chatMessage : ""}
             onChange={(e) => setChatMessage(e.target.value)}
             onKeyDown={(e) => handleChatKey(submitChatMessage, e)}
@@ -448,7 +473,7 @@ const ChatBox = ({
           <button
             type="submit"
             className="button"
-            disabled={!connected || chatMessage?.trim() === ""}
+            disabled={!connected || chatMessage?.trim() === "" || locked}
           >
             Send
           </button>
@@ -509,7 +534,7 @@ export class SessionPage extends React.Component {
       effectiveResetThreshold: formatFileSize,
     });
 
-    this.setState({ session, error: null });
+    this.setState({ session, locked: session._locked, error: null });
   }
 
   updateSetting(key, value) {
@@ -685,23 +710,26 @@ export class SessionPage extends React.Component {
   }
 
   render() {
-    const { session, changed, error, modal } = this.state;
-    const vprops = (name) => ({
+    const { session, changed, error, modal, locked } = this.state;
+    const vprops = (name, enabled = true) => ({
       value: session[name],
       update: (value) => this.updateSetting(name, value),
       pending: changed[name] !== undefined,
+      enabled: !locked && enabled,
     });
 
     return (
       <>
         <div className="content-box">
           <h2>Session</h2>
-          {error && <p className="alert-box">{error}</p>}
+          {error && <p className="alert-box">{error.toString()}</p>}
+          {locked && <p className="locked-box">This section is locked.</p>}
           {session && (
             <SessionInfo
               session={session}
               openModal={this.openModal}
               vprops={vprops}
+              locked={locked}
             />
           )}
         </div>
@@ -711,6 +739,7 @@ export class SessionPage extends React.Component {
             sessionId={this.props.sessionId}
             users={session.users}
             openModal={this.openModal}
+            locked={locked}
           />
         )}
         {session && (
@@ -718,6 +747,7 @@ export class SessionPage extends React.Component {
             listings={session.listings}
             unlisted={this.state.unlisted}
             unlist={this.unlist}
+            locked={locked}
           />
         )}
         {session && session.chat !== undefined && (
@@ -729,6 +759,7 @@ export class SessionPage extends React.Component {
             setChatMessage={(chatMessage) => this.setState({ chatMessage })}
             submitChatMessage={this.submitChatMessage.bind(this)}
             openModal={this.openModal}
+            locked={locked}
           />
         )}
         <Modal

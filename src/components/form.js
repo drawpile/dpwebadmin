@@ -36,9 +36,10 @@ export const TextAreaInput = ({long=true, enabled=true, value, update, pending, 
 	/>
 );
 
-export const IntegerInput = ({value, update, pending}) => (
+export const IntegerInput = ({value, update, pending, enabled=true}) => (
 	<input
 		type="number"
+		disabled={!enabled}
 		className={classNames({'input-text': true, pending})}
 		value={value}
 		onChange={(e) => {

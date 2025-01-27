@@ -112,7 +112,7 @@ export function setServerSettings(settings) { return doSend('/server/', 'PUT', s
 export function getListserverWhitelist() { return doGet('/listserverwhitelist/'); }
 export function setListserverWhitelist(whitelist) { return doSend('/listserverwhitelist/', 'PUT', whitelist); }
 
-export function getSessions() { return doGet('/sessions/'); }
+export function getSessions() { return doGet('/sessions/?v=2'); }
 export function changeSessions(changes) { return doSend('/sessions', 'PUT', changes); }
 export function getSession(id) { return doGet(`/sessions/${id}`); }
 export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'PUT', changes); }

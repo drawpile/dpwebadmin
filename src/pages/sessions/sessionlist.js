@@ -96,8 +96,16 @@ export class SessionListPage extends React.Component {
 
   refreshList = async () => {
     try {
-      const sessions = await getSessions();
-      this.setState({ sessions, error: null });
+      const result = await getSessions();
+      if (Array.isArray(result)) {
+        this.setState({ sessions: result, locked: false, error: null });
+      } else {
+        this.setState({
+          sessions: result.sessions,
+          locked: result._locked,
+          error: null,
+        });
+      }
     } catch (e) {
       this.setState({ error: e.toString() });
     }
@@ -121,13 +129,18 @@ export class SessionListPage extends React.Component {
   };
 
   render() {
-    const { sessions, error, modal } = this.state;
+    const { sessions, error, modal, locked } = this.state;
     return (
       <div className="content-box">
         <h2>Sessions</h2>
-        {error && <p className="alert-box">{error}</p>}
+        {error && <p className="alert-box">{error.toString()}</p>}
+        {locked && <p className="locked-box">This section is locked.</p>}
         {sessions && (
-          <button onClick={() => this.openModal("message")} className="button">
+          <button
+            onClick={() => this.openModal("message")}
+            className="button"
+            disabled={locked}
+          >
             Message all sessions
           </button>
         )}
