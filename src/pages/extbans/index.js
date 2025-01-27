@@ -5,7 +5,7 @@ import {
   refreshExtBans as checkExtBanList,
 } from "../../api";
 
-const ExtBanListTable = ({ bans, setBanEnabledFunc }) => {
+const ExtBanListTable = ({ bans, setBanEnabledFunc, locked }) => {
   return (
     <table className="table">
       <thead>
@@ -27,6 +27,7 @@ const ExtBanListTable = ({ bans, setBanEnabledFunc }) => {
                 <button
                   onClick={() => setBanEnabledFunc(b.id, false)}
                   className="button small danger"
+                  disabled={locked}
                 >
                   Disable
                 </button>
@@ -34,6 +35,7 @@ const ExtBanListTable = ({ bans, setBanEnabledFunc }) => {
                 <button
                   onClick={() => setBanEnabledFunc(b.id, true)}
                   className="button small"
+                  disabled={locked}
                 >
                   Enable
                 </button>
@@ -49,6 +51,7 @@ const ExtBanListTable = ({ bans, setBanEnabledFunc }) => {
 const ExtBanListContent = ({
   extBans: { bans, config, status },
   setBanEnabledFunc,
+  locked,
 }) => {
   return (
     <>
@@ -67,7 +70,11 @@ const ExtBanListContent = ({
         <dt>Cache key:</dt>
         <dd>{config.extBansCacheKey}</dd>
       </dl>
-      <ExtBanListTable bans={bans} setBanEnabledFunc={setBanEnabledFunc} />
+      <ExtBanListTable
+        bans={bans}
+        setBanEnabledFunc={setBanEnabledFunc}
+        locked={locked}
+      />
     </>
   );
 };
@@ -98,20 +105,23 @@ export default function () {
 
   useEffect(refreshExtBanList, []);
 
+  const locked = extBans?._locked;
   return (
     <div className="content-box">
       <h2>External bans</h2>
-      <button onClick={refreshNow} className="button">
+      {error && <p className="alert-box">{error.toString()}</p>}
+      {locked && <p className="locked-box">This section is locked.</p>}
+      <button onClick={refreshNow} className="button" disabled={locked}>
         Refresh
       </button>
-      <button onClick={checkNow} className="button">
+      <button onClick={checkNow} className="button" disabled={locked}>
         Check now
       </button>
-      {error && <p className="alert-box">{error}</p>}
       {extBans && (
         <ExtBanListContent
           extBans={extBans}
           setBanEnabledFunc={setBanEnabled}
+          locked={locked}
         />
       )}
     </div>
