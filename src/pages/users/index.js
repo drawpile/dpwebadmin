@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { getUsers } from "../../api";
 import { ModalContent } from "./modals.js";
 
-const UserListTable = ({ users, openModal }) => {
+const UserListTable = ({ users, openModal, locked }) => {
   return (
     <table className="table">
       <thead>
@@ -35,6 +35,7 @@ const UserListTable = ({ users, openModal }) => {
                   openModal("kick", { userName: u.name || u.ip, uid: u.uid })
                 }
                 className="small danger button"
+                disabled={locked}
               >
                 Kick
               </button>
@@ -106,7 +107,13 @@ export default class extends React.Component {
           <h2>Users</h2>
           {error && <p className="alert-box">{error.toString()}</p>}
           {locked && <p className="locked-box">This section is locked.</p>}
-          {users && <UserListTable users={users} openModal={this.openModal} />}
+          {users && (
+            <UserListTable
+              users={users}
+              openModal={this.openModal}
+              locked={locked}
+            />
+          )}
         </div>
         <Modal isOpen={modal.active !== null} onRequestClose={this.closeModal}>
           <ModalContent modal={modal} closeFunc={this.closeModal} />
