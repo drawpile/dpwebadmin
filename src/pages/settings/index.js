@@ -332,6 +332,20 @@ export default class extends React.Component {
               Enabling this restricts clients to Drawpile 2.2 or newer!
             </p>
           </Field>
+          <Field>
+            <CheckboxInput
+              label="Require matching hostname"
+              {...vprops(
+                "requireMatchingHost",
+                settings["requireMatchingHost"] !== undefined
+              )}
+            />
+            <p className="details">
+              Checks if the client is using the same hostname to connect as
+              given via <code>--local-host</code> on startup. Enabling this
+              restricts clients to Drawpile 2.2.2 or newer!
+            </p>
+          </Field>
         </InputGrid>
       );
     }
