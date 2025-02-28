@@ -78,6 +78,9 @@ const EditAccountModal = ({ title, user, closeFunc }) => {
     }
     if (form.host) {
       flags.push("HOST");
+      if (form.webhost) {
+        flags.push("WEBHOST");
+      }
     }
     if (form.banexempt) {
       flags.push("BANEXEMPT");
@@ -140,6 +143,12 @@ const EditAccountModal = ({ title, user, closeFunc }) => {
             {...vprops("ghost")}
           />
           <CheckboxInput label="Can host" {...vprops("host")} />
+          {form["host"] && (
+            <CheckboxInput
+              label="Can host via web browser"
+              {...vprops("webhost")}
+            />
+          )}
           <CheckboxInput label="Exempt from bans" {...vprops("banexempt")} />
           <CheckboxInput label="Can join via web browser" {...vprops("web")} />
           <CheckboxInput
@@ -197,6 +206,7 @@ export default function () {
         web: true,
         websession: true,
         persist: false,
+        webhost: true,
       },
     });
   }
@@ -216,6 +226,7 @@ export default function () {
         web: user.flags.indexOf("WEB") >= 0,
         websession: user.flags.indexOf("WEBSESSION") >= 0,
         persist: user.flags.indexOf("PERSIST") >= 0,
+        webhost: user.flags.indexOf("WEBHOST") >= 0,
       },
     });
   }

@@ -132,6 +132,15 @@ export default class extends React.Component {
               label="Allow anyone to host"
               {...vprops("allowGuestHosts")}
             />
+            {settings["allowGuestHosts"] && (
+              <CheckboxInput
+                label="Allow anyone to host from the web browser"
+                {...vprops(
+                  "allowGuestWebHosts",
+                  settings["allowGuestWebHosts"] !== undefined
+                )}
+              />
+            )}
             <CheckboxInput
               label="Allow anyone to join via web browser"
               {...vprops(
@@ -270,6 +279,15 @@ export default class extends React.Component {
               label="Allow ext-auth hosts"
               {...vprops("extauthhost", extAuthAvailable)}
             />
+            {settings["extauthhost"] && (
+              <CheckboxInput
+                label="Allow ext-auth web browser hosts"
+                {...vprops(
+                  "extauthwebhost",
+                  extAuthAvailable && settings["extauthwebhost"] !== undefined
+                )}
+              />
+            )}
             <CheckboxInput
               label="Allow ext-auth ban exemptions"
               {...vprops("extauthbanexempt", extAuthAvailable)}
