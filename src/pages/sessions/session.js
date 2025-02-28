@@ -10,7 +10,11 @@ import {
   CheckboxInput,
 } from "../../components/form.js";
 import { ModalContent } from "./modals.js";
-import { formatDateTime, formatFileSize, reformatSettings } from "../../api/format.js";
+import {
+  formatDateTime,
+  formatFileSize,
+  reformatSettings,
+} from "../../api/format.js";
 import {
   getSession,
   changeSession,
@@ -46,7 +50,7 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
           <ReadOnly value={session.alias} />
         </Field>
         <Field label="Started by">
-          <ReadOnly value={session.founder} />
+          <TextInput {...vprops("founder")} />
         </Field>
         <Field label="Started at">
           <ReadOnly value={formatDateTime(session.startTime)} />
