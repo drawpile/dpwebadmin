@@ -141,9 +141,9 @@ const EditAccountModal = ({ title, user, closeFunc }) => {
           />
           <CheckboxInput label="Can host" {...vprops("host")} />
           <CheckboxInput label="Exempt from bans" {...vprops("banexempt")} />
-          <CheckboxInput label="Can join via WebSocket" {...vprops("web")} />
+          <CheckboxInput label="Can join via web browser" {...vprops("web")} />
           <CheckboxInput
-            label="Can manage WebSocket allowance on sessions"
+            label="Can manage web browser allowance on sessions"
             {...vprops("websession")}
           />
           <CheckboxInput label="Can persist sessions" {...vprops("persist")} />

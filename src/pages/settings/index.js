@@ -133,21 +133,21 @@ export default class extends React.Component {
               {...vprops("allowGuestHosts")}
             />
             <CheckboxInput
-              label="Allow anyone to join via WebSocket"
+              label="Allow anyone to join via web browser"
               {...vprops(
                 "allowGuestWeb",
                 settings["allowGuestWeb"] !== undefined
               )}
             />
             <CheckboxInput
-              label="Allow anyone to manage WebSocket allowance on sessions"
+              label="Allow anyone to manage web browser allowance on sessions"
               {...vprops(
                 "allowGuestWebSession",
                 settings["allowGuestWebSession"] !== undefined
               )}
             />
             <CheckboxInput
-              label="Automatically allow WebSockets on passworded sessions, disallow on non-passworded ones"
+              label="Automatically allow web browsers on passworded sessions, disallow on non-passworded ones"
               {...vprops(
                 "passwordDependentWebSession",
                 settings["passwordDependentWebSession"] !== undefined
