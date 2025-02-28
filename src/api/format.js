@@ -28,12 +28,6 @@ export function formatFileSize(bytes) {
 	return bytes;
 }
 
-export function formatDays(days) {
-	if(days === 0)
-		return "forever";
-	return days + ' days';
-}
-
 export function reformatSettings(settings, formatters) {
 	for(const [name, formatter] of Object.entries(formatters)) {
 		if(name in settings) {

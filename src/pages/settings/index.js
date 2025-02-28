@@ -12,7 +12,6 @@ import {
   formatTime,
   formatTimeZero,
   formatFileSize,
-  formatDays,
   reformatSettings,
 } from "../../api/format.js";
 
@@ -64,7 +63,6 @@ export default class extends React.Component {
       reformatSettings(settings, {
         idleTimeLimit: formatTime,
         clientTimeout: formatTime,
-        logpurgedays: formatDays,
         sessionSizeLimit: formatFileSize,
         autoResetThreshold: formatFileSize,
         emptySessionLingerTime: formatTimeZero,
@@ -121,7 +119,15 @@ export default class extends React.Component {
             <TextInput {...vprops("clientTimeout")} />
           </Field>
           <Field label="Log retention">
-            <TextInput {...vprops("logpurgedays")} />
+            <TextInput {...vprops("logpurgedays")} />{" "}
+            {settings["logpurgedays"] <= 0
+              ? "(forever)"
+              : settings["logpurgedays"] > 1
+              ? "days"
+              : "day"}
+            <p className="details">
+              In days. A zero or a negative value means to retain logs forever.
+            </p>
           </Field>
           <Field>
             <CheckboxInput
