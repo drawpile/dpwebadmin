@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { getStatus } from '../../api/';
+import { formatDateTime } from '../../api/format';
 
 export default class extends React.Component {
 	state = {}
@@ -30,7 +31,7 @@ export default class extends React.Component {
 		let content = null;
 		if(status) {
 			content = <>
-				<p>Server started at {status.started}</p>
+				<p>Server started at {formatDateTime(status.started)}</p>
 				<p>Address: {status.ext_host}{status.ext_port !== 27750 ? `:${status.ext_port}` : ''}</p>
 				<p>Sessions: {status.sessions} / {status.maxSessions}</p>
 				<p>Users: {status.users}</p>

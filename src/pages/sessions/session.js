@@ -10,7 +10,7 @@ import {
   CheckboxInput,
 } from "../../components/form.js";
 import { ModalContent } from "./modals.js";
-import { formatFileSize, reformatSettings } from "../../api/format.js";
+import { formatDateTime, formatFileSize, reformatSettings } from "../../api/format.js";
 import {
   getSession,
   changeSession,
@@ -48,7 +48,7 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
           <ReadOnly value={session.founder} />
         </Field>
         <Field label="Started at">
-          <ReadOnly value={session.startTime} />
+          <ReadOnly value={formatDateTime(session.startTime)} />
         </Field>
         <Field label="Size">
           <ReadOnly value={(session.size / (1024 * 1024)).toFixed(2) + " MB"} />

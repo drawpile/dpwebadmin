@@ -36,3 +36,16 @@ export function reformatSettings(settings, formatters) {
 	}
 }
 
+export function formatDateTime(s) {
+	if(s?.endsWith("Z")) {
+		try {
+			const parsed = Date.parse(s);
+			if(!Number.isNaN(parsed)) {
+				return new Date(parsed).toLocaleString();
+			}
+		} catch(e)  {
+			console.error(`Failed to format datetime '${s}'`, e);
+		}
+	}
+	return s;
+}

@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { Link, useRouteMatch } from "react-router-dom";
 import { getSessions } from "../../api/";
 import { ModalContent } from "./modals.js";
+import { formatDateTime } from "../../api/format.js";
 
 const MODAL_SMALL_STYLE = {
   content: {
@@ -28,7 +29,7 @@ const SessionTable = ({ sessions }) => {
           <th>Users</th>
           <th>Options</th>
           <th>Size</th>
-          <th>Uptime</th>
+          <th>Started at</th>
         </tr>
       </thead>
       <tbody>
@@ -68,7 +69,9 @@ const SessionTable = ({ sessions }) => {
                 )}
               </td>
               <td>{((s.size || 0) / (1024 * 1024)).toFixed(2)} MB</td>
-              <td>{s.startTime || "not started"}</td>
+              <td>
+                {s.startTime ? formatDateTime(s.startTime) : "not started"}
+              </td>
             </tr>
           );
         })}
