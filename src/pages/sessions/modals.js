@@ -320,7 +320,7 @@ export function ModalContent({ modal, closeFunc }) {
       m = <SetPasswordModal targetSetting="password" title="password" />;
       break;
     case "setOpword":
-      m = <SetPasswordModal targetSetting="opword" title="opword" />;
+      m = <SetPasswordModal targetSetting="opword" title="operator password" />;
       break;
     case "terminate":
       m = <TerminateSessionModal />;

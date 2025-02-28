@@ -116,7 +116,7 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
           className="button"
           disabled={locked}
         >
-          {session.hasOpword ? "Change" : "Set"} opword
+          {session.hasOpword ? "Change" : "Set"} operator password
         </button>
         <button
           onClick={(e) => openModal("terminate")}
