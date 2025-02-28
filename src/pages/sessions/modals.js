@@ -8,6 +8,7 @@ import {
   kickUserFromSession,
   connectChat,
   disconnectChat,
+  createInvite,
 } from "../../api";
 
 /** Modal building blocks */
@@ -149,6 +150,94 @@ function MessageModal() {
   );
 }
 
+function InviteCreateModal() {
+  const [maxUses, setMaxUses] = useState(1);
+  const [role, setRole] = useState("");
+  const [error, setError] = useState("");
+  const ctx = useContext(ModalContext);
+
+  function connect() {
+    setError("");
+    return createInvite(
+      ctx.sessionId,
+      maxUses,
+      role === "trust",
+      role === "op"
+    );
+  }
+
+  function catchError(err) {
+    setError(`${err}`.replace(/^Error:\s*/, ""));
+  }
+
+  return (
+    <>
+      <ModalHeader>Create Invite Code</ModalHeader>
+      {error && (
+        <p>
+          <strong>Error:</strong> {error}
+        </p>
+      )}
+      <label class="form-row">
+        Uses:
+        <input
+          type="number"
+          className="input-text form-field"
+          min="1"
+          max="50"
+          value={maxUses}
+          onChange={(e) => setMaxUses(e.target.value)}
+        />
+      </label>
+      <div class="form-row">
+        Role:
+        <div className="form-field">
+          <label className="form-radio-label">
+            <input
+              type="radio"
+              checked={role === ""}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setRole("");
+                }
+              }}
+            />
+            None
+          </label>
+          <label className="form-radio-label">
+            <input
+              type="radio"
+              checked={role === "trust"}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setRole("trust");
+                }
+              }}
+            />
+            Trusted
+          </label>
+          <label className="form-radio-label">
+            <input
+              type="radio"
+              checked={role === "op"}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setRole("op");
+                }
+              }}
+            />
+            Operator
+          </label>
+        </div>
+      </div>
+      <ModalButtons>
+        <OkButton func={connect} errorFunc={catchError} label="Create" />
+        <CancelButton />
+      </ModalButtons>
+    </>
+  );
+}
+
 function ChatConnectModal() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -241,6 +330,9 @@ export function ModalContent({ modal, closeFunc }) {
       break;
     case "kick":
       m = <KickUserModal />;
+      break;
+    case "inviteCreate":
+      m = <InviteCreateModal />;
       break;
     case "chatConnect":
       m = <ChatConnectModal />;

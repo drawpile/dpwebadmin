@@ -246,6 +246,10 @@ export default class extends React.Component {
               label="Force all sessions to be marked Not Suitable for Minors (NSFM)"
               {...vprops("forceNsfm")}
             />
+            <CheckboxInput
+              label="Allow operators to manage session invite codes by default"
+              {...vprops("invites")}
+            />
           </Field>
 
           <Caption>Abuse reporting</Caption>

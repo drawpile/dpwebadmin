@@ -175,6 +175,11 @@ tr.offline {
 	color: #7f8c8d;
 }
 
+table > tbody td.invite-use {
+	color: #7f8c8d;
+	padding-left: 2em;
+}
+
 /** BUTTONS **/
 
 .button {

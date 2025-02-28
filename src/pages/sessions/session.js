@@ -18,6 +18,7 @@ import {
   unlistSession,
   getChatMessages,
   sendChatMessage,
+  revokeInvite,
 } from "../../api/";
 
 const MODAL_SMALL_STYLE = {
@@ -95,6 +96,10 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
           <CheckboxInput
             label=" 🌐 Allow joining via web browser"
             {...vprops("allowWeb", session.allowWeb !== undefined)}
+          />
+          <CheckboxInput
+            label=" 📮 Allow operators to manage invite codes"
+            {...vprops("invites", session.invites !== undefined)}
           />
         </Field>
       </InputGrid>
@@ -322,6 +327,64 @@ const ListingsBox = ({ listings, unlisted, unlist, locked }) => {
   );
 };
 
+const InvitesBox = ({ invites, openModal, revoked, revoke, locked }) => {
+  return (
+    <div className="content-box">
+      <h3>Invite Codes</h3>
+      <button
+        onClick={() => openModal("inviteCreate")}
+        className="button"
+        disabled={locked}
+      >
+        Create
+      </button>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Created by</th>
+            <th>Created at</th>
+            <th>Roles</th>
+            <th>Uses</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {invites.map((invite) => [
+            <tr key={invite.secret}>
+              <td>{invite.secret}</td>
+              <td>{invite.creator}</td>
+              <td>{formatDateTime(invite.at)}</td>
+              <td>
+                {invite.trust && "Trusted"} {invite.op && "Operator"}
+              </td>
+              <td>
+                {invite.uses?.length || 0} / {invite.maxUses}
+              </td>
+              <td>
+                <button
+                  onClick={() => revoke(invite.secret)}
+                  className="small danger button"
+                  disabled={revoked[invite.secret] || locked}
+                >
+                  {revoked[invite.secret] ? "Revoked" : "Revoke"}
+                </button>
+              </td>
+            </tr>,
+            invite.uses.map((use) => (
+              <tr key={`${invite.secret}:${use.at}:${use.name}`}>
+                <td colspan="6" className="invite-use">
+                  Used {formatDateTime(use.at)} by {use.name}
+                </td>
+              </tr>
+            )),
+          ])}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 function renderOfflineChat(openModal, locked) {
   return (
     <>
@@ -487,6 +550,7 @@ export class SessionPage extends React.Component {
   state = {
     changed: {},
     unlisted: {},
+    revoked: {},
     chat: {
       connected: false,
       messages: [],
@@ -505,18 +569,26 @@ export class SessionPage extends React.Component {
 
   componentDidMount() {
     this.refreshList();
-    this.timer = setInterval(this.refreshList, 10000);
+    this.refreshTimer = setTimeout(this.refreshList, 10000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    if (this.refreshTimer !== null) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
     if (this.debounceTimer !== null) {
       clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
     }
     this.stopChatTimer();
   }
 
   refreshList = async () => {
+    if (this.refreshTimer !== null) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
     try {
       const session = await getSession(this.props.sessionId);
       this.setStateSession(session);
@@ -525,6 +597,10 @@ export class SessionPage extends React.Component {
       }
     } catch (e) {
       this.setState({ error: e.toString() });
+    } finally {
+      if (this.refreshTimer === null) {
+        this.refreshTimer = setTimeout(this.refreshList, 10000);
+      }
     }
   };
 
@@ -533,6 +609,22 @@ export class SessionPage extends React.Component {
       resetThreshold: formatFileSize,
       effectiveResetThreshold: formatFileSize,
     });
+
+    if (session.invitelist) {
+      const compareAt = (a, b) => {
+        const aAt = a?.at || "";
+        const bAt = b?.at || "";
+        return aAt < bAt ? -1 : aAt > bAt ? 1 : 0;
+      };
+      try {
+        session.invitelist.sort(compareAt);
+        for (const invite of session.invitelist) {
+          invite.uses?.sort(compareAt);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
     this.setState({ session, locked: session._locked, error: null });
   }
@@ -615,6 +707,9 @@ export class SessionPage extends React.Component {
       });
       this.handleChatResponse(res);
     } else {
+      if (res && this.state.modal.active === "inviteCreate") {
+        this.refreshList();
+      }
       this.setState({
         modal: {
           active: null,
@@ -631,6 +726,20 @@ export class SessionPage extends React.Component {
       },
     });
     unlistSession(this.props.sessionId, listingId);
+  };
+
+  revoke = async (secret) => {
+    this.setState({
+      revoked: {
+        ...this.state.revoked,
+        [secret]: true,
+      },
+    });
+    try {
+      await revokeInvite(this.props.sessionId, secret);
+    } finally {
+      this.refreshList();
+    }
   };
 
   scrollChatToBottom() {
@@ -747,6 +856,15 @@ export class SessionPage extends React.Component {
             listings={session.listings}
             unlisted={this.state.unlisted}
             unlist={this.unlist}
+            locked={locked}
+          />
+        )}
+        {session && session.invitelist && (
+          <InvitesBox
+            invites={session.invitelist}
+            openModal={this.openModal}
+            revoked={this.state.revoked}
+            revoke={this.revoke}
             locked={locked}
           />
         )}

@@ -119,6 +119,9 @@ export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'P
 export function terminateSession(id) { return doDelete(`/sessions/${id}`); }
 export function unlistSession(sessionId, listingId) { return doDelete(`/sessions/${sessionId}/listing/${listingId}`); }
 
+export function createInvite(sessionId, maxUses, trust, op) { return doSend(`/sessions/${encodeURIComponent(sessionId)}/invites`, 'POST', {maxUses, trust, op}); }
+export function revokeInvite(sessionId, secret) { return doDelete(`/sessions/${encodeURIComponent(sessionId)}/invites/${encodeURIComponent(secret)}`); }
+
 export function getUsers() { return doGet('/users/?v=2'); }
 export function kickUserByUid(uid) { return doDelete(`/users/${uid}`); }
 export function changeUser(sessionId, userId, changes) { return doSend(`/sessions/${sessionId}/${userId}`, 'PUT', changes); }

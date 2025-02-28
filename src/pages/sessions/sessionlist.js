@@ -67,6 +67,9 @@ const SessionTable = ({ sessions }) => {
                 {s.allowWeb && (
                   <span title="Allow joining via web browser">🌐</span>
                 )}
+                {s.invites && (
+                  <span title="Allow operators to manage invite codes">📮</span>
+                )}
               </td>
               <td>{((s.size || 0) / (1024 * 1024)).toFixed(2)} MB</td>
               <td>

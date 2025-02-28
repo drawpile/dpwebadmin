@@ -75,6 +75,10 @@
 	flex-grow: 1;
 }
 
+.form-radio-label {
+	display: block;
+}
+
 .chat {
 	background-color: #eff0f1;
 	border: 1px solid #7f8c8d;
