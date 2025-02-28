@@ -64,7 +64,7 @@ const SessionTable = ({ sessions }) => {
                 )}
                 {s.idleOverride && <span title="Ignores idle timeout">⏰</span>}
                 {s.allowWeb && (
-                  <span title="Allow joining via WebSocket">🌐</span>
+                  <span title="Allow joining via web browser">🌐</span>
                 )}
               </td>
               <td>{((s.size || 0) / (1024 * 1024)).toFixed(2)} MB</td>

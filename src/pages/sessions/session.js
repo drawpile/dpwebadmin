@@ -93,7 +93,7 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
             {...vprops("idleOverride")}
           />
           <CheckboxInput
-            label=" 🌐 Allow joining via WebSocket"
+            label=" 🌐 Allow joining via web browser"
             {...vprops("allowWeb", session.allowWeb !== undefined)}
           />
         </Field>
