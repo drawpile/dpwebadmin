@@ -227,10 +227,6 @@ export default class extends React.Component {
               {...vprops("archive")}
             />
             <CheckboxInput
-              label="Do not include user list in session announcements"
-              {...vprops("privateUserList")}
-            />
-            <CheckboxInput
               label="Allow custom avatars"
               {...vprops("customAvatars")}
             />
