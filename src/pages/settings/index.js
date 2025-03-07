@@ -342,7 +342,7 @@ export default class extends React.Component {
             <p className="details">In seconds, minimum 60.</p>
           </Field>
 
-          <Caption>Restrictions</Caption>
+          <Caption>Connections</Caption>
           <Field label="Minimum protocol version">
             <TextInput {...vprops("minimumProtocolVersion")} />
             <p className="details">
@@ -372,6 +372,20 @@ export default class extends React.Component {
               Checks if the client is using the same hostname to connect as
               given via <code>--local-host</code> on startup. Enabling this
               restricts clients to Drawpile 2.2.2 or newer!
+            </p>
+          </Field>
+          <Field>
+            <CheckboxInput
+              label="Prefer connections via WebSockets"
+              {...vprops(
+                "preferWebSockets",
+                settings["preferWebSockets"] !== undefined
+              )}
+            />
+            <p className="details">
+              Indicates to clients that WebSocket connections are preferred over
+              TCP. Only has an effect on Drawpile 2.2.2 and newer, older clients
+              disregard this.
             </p>
           </Field>
         </InputGrid>
