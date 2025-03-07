@@ -111,10 +111,10 @@ export default function () {
       <h2>External bans</h2>
       {error && <p className="alert-box">{error.toString()}</p>}
       {locked && <p className="locked-box">This section is locked.</p>}
-      <button onClick={refreshNow} className="button" disabled={locked}>
+      <button onClick={refreshNow} className="button">
         Refresh
       </button>
-      <button onClick={checkNow} className="button" disabled={locked}>
+      <button onClick={checkNow} className="button">
         Check now
       </button>
       {extBans && (
