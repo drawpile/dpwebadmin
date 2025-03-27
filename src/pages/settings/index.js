@@ -14,6 +14,7 @@ import {
   formatFileSize,
   reformatSettings,
 } from "../../api/format.js";
+import classNames from "classnames";
 
 export default class extends React.Component {
   state = {
@@ -214,6 +215,38 @@ export default class extends React.Component {
                 How long non-persistent empty sessions continue to exist to give
                 users a chance to reconnect. Zero means they will be terminated
                 immediately.
+              </p>
+            </Field>
+          )}
+          {settings["unlistedHostPolicy"] !== undefined && (
+            <Field label="Unlist policy">
+              <select
+                value={settings["unlistedHostPolicy"]}
+                disabled={locked}
+                className={classNames({
+                  "input-select": true,
+                  pending: changed["unlistedHostPolicy"] !== undefined,
+                })}
+                onChange={(e) =>
+                  this.updateSetting("unlistedHostPolicy", e.target.value)
+                }
+              >
+                <option value="">
+                  Don't modify unlisted state of sessions automatically
+                </option>
+                <option value="WEB">
+                  Make sessions unlisted when they're hosted via web browser
+                </option>
+                <option value="ALL">
+                  Make all session unlisted when they're hosted
+                </option>
+              </select>
+              <p className="details">
+                Which sessions should be made unlisted when they are hosted.
+                These sessions can only be joined via a direct link, they don't
+                show up when joining the server without a link and can't be
+                announced. They also don't show up in listserver listings since
+                version 1.7.3.
               </p>
             </Field>
           )}

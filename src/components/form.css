@@ -39,7 +39,7 @@
 	width: auto;
 }
 
-.input-text.pending, .input-checkbox.pending>span {
+.input-text.pending, .input-checkbox.pending>span, .input-select.pending {
 	outline: 1px solid #f47750;
 }
 
