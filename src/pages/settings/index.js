@@ -19,6 +19,7 @@ import classNames from "classnames";
 export default class extends React.Component {
   state = {
     settings: null,
+    filter: null,
     changed: {},
     fetching: false,
     error: null,
@@ -50,6 +51,85 @@ export default class extends React.Component {
     }, 1000);
   }
 
+  updateFilter(key, value) {
+    const filter = { ...this.state.filter };
+    filter.error = false;
+    filter[key] = value;
+
+    const results = [];
+
+    let filterNameRegex = null;
+    if (filter.filterNameRegex) {
+      try {
+        filterNameRegex = RegExp(filter.filterNameRegex, "gis");
+      } catch (e) {
+        filter.error = true;
+        results.push(`Invalid pre-filter regex: ${e}`);
+      }
+    }
+
+    let forbiddenNameRegex = null;
+    if (filter.forbiddenNameRegex) {
+      try {
+        forbiddenNameRegex = RegExp(filter.forbiddenNameRegex, "gis");
+      } catch (e) {
+        filter.error = true;
+        results.push(`Invalid forbidden name regex: ${e}`);
+      }
+    }
+
+    if (results.length === 0) {
+      if (filterNameRegex) {
+        results.push("Pre-filter regex OK.");
+      } else {
+        results.push("No pre-filter regex given, inputs won't be filtered.");
+      }
+
+      if (forbiddenNameRegex) {
+        results.push("Forbidden terms regex OK.");
+      } else {
+        results.push(
+          "No forbidden terms regex given, these settings will have no effect."
+        );
+      }
+
+      if (filterNameRegex || forbiddenNameRegex) {
+        results.push(
+          "",
+          ...filter.testInput
+            .split("\n")
+            .filter((s) => s !== "")
+            .map((s) => {
+              let result = `«${s}»`;
+
+              if (filterNameRegex) {
+                const filtered = s.replace(filterNameRegex, "");
+                if (filtered === s) {
+                  result += " => unfiltered";
+                } else {
+                  result += ` => filtered to «${filtered}»`;
+                  s = filtered;
+                }
+              }
+
+              if (forbiddenNameRegex) {
+                if (forbiddenNameRegex.test(s)) {
+                  result += ` => ⛔ FORBIDDEN`;
+                } else {
+                  result += ` => ✔️ OK`;
+                }
+              }
+
+              return result;
+            })
+        );
+      }
+    }
+    filter.testResults = results.join("\n");
+
+    this.setState({ filter });
+  }
+
   async refreshSettings(update = null) {
     try {
       this.setState({ fetching: true });
@@ -71,6 +151,12 @@ export default class extends React.Component {
 
       this.setState({
         settings,
+        filter: this.filter || {
+          forbiddenNameRegex: settings["forbiddenNameRegex"],
+          filterNameRegex: settings["filterNameRegex"],
+          testInput: "",
+          testResults: "",
+        },
         fetching: false,
         error: null,
         locked: settings._locked,
@@ -417,6 +503,94 @@ export default class extends React.Component {
               disregard this.
             </p>
           </Field>
+          {settings["forbiddenNameRegex"] !== undefined &&
+            settings["filterNameRegex"] !== undefined && (
+              <>
+                <Caption>Title and username restrictions</Caption>
+                <Field>
+                  <p>
+                    ⚠️ This section must be saved explicitly! Changing stuff
+                    will not automatically modify the setting in the server.
+                    Leaving the page will discard the changes.
+                  </p>
+                </Field>
+                <Field label="Pre-filter regex">
+                  <TextAreaInput
+                    rows={5}
+                    value={this.state.filter.filterNameRegex}
+                    pending={
+                      this.state.filter.filterNameRegex !==
+                      settings["filterNameRegex"]
+                    }
+                    update={(value) =>
+                      this.updateFilter("filterNameRegex", value)
+                    }
+                  />
+                  <p className="details">
+                    This case-insensitive regex will be applied to session
+                    titles and usernames. Anything that matches is removed from
+                    the string. You can use this to filter out false positives.
+                  </p>
+                </Field>
+                <Field label="Forbidden terms regex">
+                  <TextAreaInput
+                    rows={5}
+                    value={this.state.filter.forbiddenNameRegex}
+                    pending={
+                      this.state.filter.forbiddenNameRegex !==
+                      settings["forbiddenNameRegex"]
+                    }
+                    update={(value) =>
+                      this.updateFilter("forbiddenNameRegex", value)
+                    }
+                  />
+                  <p className="details">
+                    This case-insensitive regex will be applied to what's left
+                    after applying the pre-filter regex above. If it matches,
+                    the username is not allowed to connect and an attempt to
+                    change the session title will be ignored. A log will be made
+                    to that effect.
+                  </p>
+                </Field>
+                <Field label="Test inputs">
+                  <TextAreaInput
+                    rows={5}
+                    value={this.state.filter.testInput}
+                    update={(value) => this.updateFilter("testInput", value)}
+                  />
+                  <p className="details">
+                    Enter strings you want to test, one per line.
+                  </p>
+                </Field>
+                <Field>
+                  <pre>{this.state.filter.testResults}</pre>
+                </Field>
+                <Field>
+                  <button
+                    class="button"
+                    disabled={
+                      (this.state.filter.filterNameRegex ===
+                        settings["filterNameRegex"] &&
+                        this.state.filter.forbiddenNameRegex ===
+                          settings["forbiddenNameRegex"]) ||
+                      this.state.filter.error
+                    }
+                    onClick={() => {
+                      this.updateSetting(
+                        "forbiddenNameRegex",
+                        this.state.filter.forbiddenNameRegex
+                      );
+                      this.updateSetting(
+                        "filterNameRegex",
+                        this.state.filter.filterNameRegex
+                      );
+                    }}
+                  >
+                    Save title and username restrictions
+                  </button>
+                </Field>
+              </>
+            )}
         </InputGrid>
       );
     }
