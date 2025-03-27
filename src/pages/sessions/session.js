@@ -105,6 +105,10 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
             label=" 📮 Allow operators to manage invite codes"
             {...vprops("invites", session.invites !== undefined)}
           />
+          <CheckboxInput
+            label=" 🙈 Unlisted, only joinable through direct link"
+            {...vprops("unlisted", session.unlisted !== undefined)}
+          />
         </Field>
       </InputGrid>
       <p>

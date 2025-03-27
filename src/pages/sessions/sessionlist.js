@@ -70,6 +70,11 @@ const SessionTable = ({ sessions }) => {
                 {s.invites && (
                   <span title="Allow operators to manage invite codes">📮</span>
                 )}
+                {s.unlisted && (
+                  <span title=" Unlisted, only joinable through direct link">
+                    🙈
+                  </span>
+                )}
               </td>
               <td>{((s.size || 0) / (1024 * 1024)).toFixed(2)} MB</td>
               <td>
