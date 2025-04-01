@@ -116,7 +116,7 @@ export function getSessions() { return doGet('/sessions/?v=2'); }
 export function changeSessions(changes) { return doSend('/sessions', 'PUT', changes); }
 export function getSession(id) { return doGet(`/sessions/${id}`); }
 export function changeSession(id, changes) { return doSend(`/sessions/${id}`, 'PUT', changes); }
-export function terminateSession(id) { return doDelete(`/sessions/${id}`); }
+export function terminateSession(id, quiet) { return doDelete(`/sessions/${id}${quiet ? "?quiet=true" : ""}`); }
 export function unlistSession(sessionId, listingId) { return doDelete(`/sessions/${sessionId}/listing/${listingId}`); }
 
 export function createInvite(sessionId, maxUses, trust, op) { return doSend(`/sessions/${encodeURIComponent(sessionId)}/invites`, 'POST', {maxUses, trust, op}); }

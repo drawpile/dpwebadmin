@@ -78,16 +78,45 @@ function SetPasswordModal({ targetSetting, title }) {
 function TerminateSessionModal() {
   const ctx = useContext(ModalContext);
   const history = useHistory();
+  const [counter, setCounter] = useState(0);
+  const [quiet, setQuiet] = useState(false);
+  const counterLimit = 5;
 
   async function terminate() {
-    await terminateSession(ctx.sessionId);
+    await terminateSession(ctx.sessionId, quiet);
     history.replace("/sessions/");
+  }
+
+  function incrementCounter() {
+    const nextCounter = counter + 1;
+    setCounter(nextCounter);
+    if (nextCounter === counterLimit) {
+      alert(
+        "Quietly terminating a session will keep users connected and echo " +
+          "what they draw or write in chat back at them. The purpose is to " +
+          "buy time to enter bans without the the offending session getting " +
+          "rehosted immediately and having to play whack-a-mole. The users " +
+          "still take up some amount of network and processing resources, so " +
+          "you may want to kick them on the Users page once you're done."
+      );
+    }
   }
 
   return (
     <>
       <ModalHeader>Terminate session</ModalHeader>
-      <p>Really terminate session?</p>
+      <p onClick={incrementCounter}>Really terminate session?</p>
+      {counter >= 5 && (
+        <>
+          <label>
+            <input
+              type="checkbox"
+              onChange={(e) => setQuiet(e.target.checked)}
+            />{" "}
+            Quietly terminate session
+          </label>
+        </>
+      )}
       <ModalButtons>
         <OkButton func={terminate} label="Terminate" />
         <CancelButton />

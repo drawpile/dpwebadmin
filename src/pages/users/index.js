@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import { getUsers } from "../../api";
 import { ModalContent } from "./modals.js";
+import { getUserFlags, getUserLegend } from "../../components/flags.js";
 
 const UserListTable = ({ users, openModal, locked }) => {
   return (
@@ -13,7 +14,7 @@ const UserListTable = ({ users, openModal, locked }) => {
           <th>ID</th>
           <th>Session</th>
           <th>IP</th>
-          <th>Features</th>
+          <th>Flags</th>
           <th></th>
         </tr>
       </thead>
@@ -23,12 +24,16 @@ const UserListTable = ({ users, openModal, locked }) => {
             <td>{u.name}</td>
             <td>{u.id}</td>
             <td>
-              <Link to={`/sessions/${u.session}`}>{u.session}</Link>
+              {u.session ? (
+                <Link to={`/sessions/${u.session}`}>{u.session}</Link>
+              ) : u.state === "quiet_disconnect" ? (
+                "(quietly terminated)"
+              ) : (
+                ""
+              )}
             </td>
             <td>{u.ip}</td>
-            <td>
-              {u.mod && "MOD"} {u.op && "OP"} {u.ghost && "GHOST"}
-            </td>
+            <td>{getUserFlags(u)}</td>
             <td>
               <button
                 onClick={() =>
@@ -101,6 +106,7 @@ export default class extends React.Component {
 
   render() {
     const { users, error, modal, locked } = this.state;
+    const legend = getUserLegend(users);
     return (
       <>
         <div className="content-box">
@@ -114,6 +120,7 @@ export default class extends React.Component {
               locked={locked}
             />
           )}
+          {legend && <p>{legend}</p>}
         </div>
         <Modal isOpen={modal.active !== null} onRequestClose={this.closeModal}>
           <ModalContent modal={modal} closeFunc={this.closeModal} />

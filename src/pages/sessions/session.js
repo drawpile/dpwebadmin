@@ -24,6 +24,7 @@ import {
   sendChatMessage,
   revokeInvite,
 } from "../../api/";
+import { getUserFlags, getUserLegend } from "../../components/flags.js";
 
 const MODAL_SMALL_STYLE = {
   content: {
@@ -208,6 +209,7 @@ const UserListBox = ({ sessionId, users, openModal, locked }) => {
     changeUser(sessionId, user.id, { trusted: !user.trusted });
   }
 
+  const legend = getUserLegend(users);
   return (
     <div className="content-box">
       <h3>Users</h3>
@@ -229,8 +231,7 @@ const UserListBox = ({ sessionId, users, openModal, locked }) => {
               <td>{u.name}</td>
               <td>{u.ip}</td>
               <td>
-                {u.muted && "Muted"} {u.mod && "MOD"} {u.ghost && "GHOST"}{" "}
-                {u.op && "Op"} {u.trusted && "Trusted"} {u.holdLocked && "Hold"}{" "}
+                {getUserFlags(u)} {u.holdLocked && "Hold"}{" "}
                 {u.resetFlags?.length ? `Reset(${u.resetFlags.join(" ")})` : ""}
               </td>
               <td>{u.online ? "online" : "offline"}</td>
@@ -280,6 +281,7 @@ const UserListBox = ({ sessionId, users, openModal, locked }) => {
           ))}
         </tbody>
       </table>
+      {legend && <p>{legend}</p>}
       <p>
         <button
           onClick={() => openModal("message")}
