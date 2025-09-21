@@ -18,10 +18,10 @@ export function formatTimeZero(seconds) {
 }
 
 export function formatSize(zeroValue, bytes) {
-	if(bytes > 1024*1024) {
-		return (bytes / (1024*1024)).toFixed(2) + " mb";
-	} else if(bytes > 1024) {
-		return (bytes / (1024*1024)).toFixed(2) + " kb";
+	if(bytes >= 1024*1024) {
+		return (bytes / (1024*1024)).toFixed(2) + " MB";
+	} else if(bytes >= 1024) {
+		return (bytes / 1024).toFixed(2) + " KB";
 	} else if(bytes === 0) {
 		return zeroValue;
 	}
