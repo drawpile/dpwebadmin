@@ -87,6 +87,18 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
               <ReadOnly {...vprops("effectiveResetThreshold")} />
             </>
           )}
+          <p className="details">
+            A value of 0 MB disables autoresets.
+            {session.minResetThreshold ? (
+              <>
+                {" "}
+                The server-wide minimum autoreset threshold is{" "}
+                {(session.minResetThreshold / (1024 * 1024)).toFixed(2)} MB.
+              </>
+            ) : (
+              false
+            )}
+          </p>
         </Field>
         {hasArchive && (
           <Field label="Archival">
@@ -682,7 +694,7 @@ export class SessionPage extends React.Component {
 
   setStateSession(session) {
     reformatSettings(session, {
-      resetThreshold: formatFileSize,
+      resetThreshold: formatSize.bind(null, "0 MB"),
       effectiveResetThreshold: formatFileSize,
       overrideSize: formatSize.bind(null, "0 MB"),
     });
