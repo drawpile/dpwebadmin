@@ -39,7 +39,7 @@
 	width: auto;
 }
 
-.input-text.pending, .input-checkbox.pending>span, .input-select.pending {
+.input-text.pending, .input-checkbox.pending>span, .input-select.pending, .input-radio-wrapper.pending {
 	outline: 1px solid #f47750;
 }
 

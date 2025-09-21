@@ -39,6 +39,11 @@ const MODAL_SMALL_STYLE = {
 };
 
 const SessionInfo = ({ session, openModal, vprops, locked }) => {
+  const hasArchive =
+    session.archive === null ||
+    session.archive === false ||
+    session.archive === true;
+  const archiveProps = hasArchive && vprops("archive");
   return (
     <div>
       <InputGrid>
@@ -82,6 +87,56 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
             </>
           )}
         </Field>
+        {hasArchive && (
+          <Field label="Archival">
+            <div
+              className={classNames({
+                "input-radio-wrapper": true,
+                pending: archiveProps.pending,
+              })}
+            >
+              <label>
+                <input
+                  type="radio"
+                  checked={session.archive === null}
+                  disabled={!archiveProps.enabled}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      archiveProps.update(null);
+                    }
+                  }}
+                />
+                Default
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  checked={session.archive === false}
+                  disabled={!archiveProps.enabled}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      archiveProps.update(false);
+                    }
+                  }}
+                />
+                Disabled
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  checked={session.archive === true}
+                  disabled={!archiveProps.enabled}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      archiveProps.update(true);
+                    }
+                  }}
+                />
+                Enabled
+              </label>
+            </div>
+          </Field>
+        )}
         <Field label="Users">
           <ReadOnly value={session.userCount} />
           /
