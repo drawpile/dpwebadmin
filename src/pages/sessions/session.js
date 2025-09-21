@@ -13,6 +13,7 @@ import { ModalContent } from "./modals.js";
 import {
   formatDateTime,
   formatFileSize,
+  formatSize,
   reformatSettings,
 } from "../../api/format.js";
 import {
@@ -63,6 +64,15 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
             value={(session.maxSize / (1024 * 1024)).toFixed(2) + " MB"}
           />
         </Field>
+        {session.overrideSize !== undefined && (
+          <Field label="Override size limit">
+            <TextInput {...vprops("overrideSize")} />
+            <p className="details">
+              A value of 0 MB will use the server-wide size limit of{" "}
+              {(session.baseSize / (1024 * 1024)).toFixed(2)} MB.
+            </p>
+          </Field>
+        )}
         <Field label="Autoreset threshold">
           <TextInput {...vprops("resetThreshold")} />
           {session.effectiveResetThreshold && (
@@ -618,6 +628,7 @@ export class SessionPage extends React.Component {
     reformatSettings(session, {
       resetThreshold: formatFileSize,
       effectiveResetThreshold: formatFileSize,
+      overrideSize: formatSize.bind(null, "0 MB"),
     });
 
     if (session.invitelist) {
