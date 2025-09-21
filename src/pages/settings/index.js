@@ -6,6 +6,7 @@ import {
   TextInput,
   CheckboxInput,
   TextAreaInput,
+  SizeInput,
 } from "../../components/form.js";
 import * as API from "../../api";
 import {
@@ -29,7 +30,7 @@ export default class extends React.Component {
 
   debounceTimer = null;
 
-  updateSetting(key, value) {
+  updateSetting(key, value, haveChangeValue, changeValue) {
     this.setState((d) => ({
       settings: {
         ...d.settings,
@@ -37,7 +38,7 @@ export default class extends React.Component {
       },
       changed: {
         ...d.changed,
-        [key]: value,
+        [key]: haveChangeValue ? changeValue : value,
       },
     }));
 
@@ -190,7 +191,8 @@ export default class extends React.Component {
       const changed = this.state.changed;
       const vprops = (name, enabled = true) => ({
         value: settings[name],
-        update: (value) => this.updateSetting(name, value),
+        update: (value, haveChangeValue, changeValue) =>
+          this.updateSetting(name, value, haveChangeValue, changeValue),
         pending: changed[name] !== undefined,
         enabled: enabled && !locked,
       });
@@ -285,11 +287,11 @@ export default class extends React.Component {
             <TextInput {...vprops("sessionSizeLimit")} />
           </Field>
           <Field label="Default autoreset threshold">
-            <TextInput {...vprops("autoResetThreshold")} />
+            <SizeInput {...vprops("autoResetThreshold")} />
           </Field>
           {settings["minimumAutoResetThreshold"] !== undefined && (
             <Field label="Minimum autoreset threshold">
-              <TextInput {...vprops("minimumAutoResetThreshold")} />
+              <SizeInput {...vprops("minimumAutoResetThreshold")} />
             </Field>
           )}
           <Field label="Max simultaneous sessions">

@@ -8,6 +8,7 @@ import {
   IntegerInput,
   ReadOnly,
   CheckboxInput,
+  SizeInput,
 } from "../../components/form.js";
 import { ModalContent } from "./modals.js";
 import {
@@ -71,7 +72,7 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
         </Field>
         {session.overrideSize !== undefined && (
           <Field label="Override size limit">
-            <TextInput {...vprops("overrideSize")} />
+            <SizeInput {...vprops("overrideSize")} />
             <p className="details">
               A value of 0 MB will use the server-wide size limit of{" "}
               {(session.baseSize / (1024 * 1024)).toFixed(2)} MB.
@@ -79,7 +80,7 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
           </Field>
         )}
         <Field label="Autoreset threshold">
-          <TextInput {...vprops("resetThreshold")} />
+          <SizeInput {...vprops("resetThreshold")} />
           {session.effectiveResetThreshold && (
             <>
               {" effectively "}
@@ -705,7 +706,7 @@ export class SessionPage extends React.Component {
     this.setState({ session, locked: session._locked, error: null });
   }
 
-  updateSetting(key, value) {
+  updateSetting(key, value, haveChangeValue, changeValue) {
     this.setState((d) => ({
       session: {
         ...d.session,
@@ -713,7 +714,7 @@ export class SessionPage extends React.Component {
       },
       changed: {
         ...d.changed,
-        [key]: value,
+        [key]: haveChangeValue ? changeValue : value,
       },
     }));
 
@@ -898,7 +899,8 @@ export class SessionPage extends React.Component {
     const { session, changed, error, modal, locked } = this.state;
     const vprops = (name, enabled = true) => ({
       value: session[name],
-      update: (value) => this.updateSetting(name, value),
+      update: (value, haveChangeValue, changeValue) =>
+        this.updateSetting(name, value, haveChangeValue, changeValue),
       pending: changed[name] !== undefined,
       enabled: !locked && enabled,
     });

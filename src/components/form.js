@@ -24,6 +24,23 @@ export const TextInput = ({long, enabled=true, value, update, pending}) => (
 	/>
 );
 
+export const SizeInput = ({long, enabled=true, value, update, pending}) => (
+	<input
+		type="text"
+		disabled={!enabled}
+		className={classNames({'input-text': true, long, pending})}
+		value={value}
+		onChange={(e) => {
+			const value = e.target.value;
+			if (/^\s*[0-9]+(\.[0-9]+)?\s*$/.test(value)) {
+				update(value, true, value + "MB");
+			} else {
+				update(value);
+			}
+		}}
+	/>
+);
+
 export const TextAreaInput = ({long=true, enabled=true, value, update, pending, rows=10, maxLength}) => (
 	<textarea
 		type="text"
