@@ -17,15 +17,19 @@ export function formatTimeZero(seconds) {
 	return formatTimeWith(seconds, "0");
 }
 
-export function formatFileSize(bytes) {
+export function formatSize(zeroValue, bytes) {
 	if(bytes > 1024*1024) {
 		return (bytes / (1024*1024)).toFixed(2) + " mb";
 	} else if(bytes > 1024) {
 		return (bytes / (1024*1024)).toFixed(2) + " kb";
 	} else if(bytes === 0) {
-		return "unlimited";
+		return zeroValue;
 	}
 	return bytes;
+}
+
+export function formatFileSize(bytes) {
+	return formatSize("unlimited", bytes);
 }
 
 export function reformatSettings(settings, formatters) {

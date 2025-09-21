@@ -13,6 +13,7 @@ import {
   formatTimeZero,
   formatFileSize,
   reformatSettings,
+  formatSize,
 } from "../../api/format.js";
 import classNames from "classnames";
 
@@ -147,6 +148,7 @@ export default class extends React.Component {
         sessionSizeLimit: formatFileSize,
         autoResetThreshold: formatFileSize,
         emptySessionLingerTime: formatTimeZero,
+        minimumAutoResetThreshold: formatSize.bind(null, "0 mb"),
       });
 
       this.setState({
@@ -285,6 +287,11 @@ export default class extends React.Component {
           <Field label="Default autoreset threshold">
             <TextInput {...vprops("autoResetThreshold")} />
           </Field>
+          {settings["minimumAutoResetThreshold"] !== undefined && (
+            <Field label="Minimum autoreset threshold">
+              <TextInput {...vprops("minimumAutoResetThreshold")} />
+            </Field>
+          )}
           <Field label="Max simultaneous sessions">
             <TextInput {...vprops("sessionCountLimit")} />
           </Field>
