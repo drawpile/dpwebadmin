@@ -149,6 +149,7 @@ export default class extends React.Component {
         sessionSizeLimit: formatFileSize,
         autoResetThreshold: formatFileSize,
         emptySessionLingerTime: formatTimeZero,
+        sessionLessClientLingerTime: formatTime,
         minimumAutoResetThreshold: formatSize.bind(null, "0 mb"),
       });
 
@@ -310,6 +311,18 @@ export default class extends React.Component {
                 How long non-persistent empty sessions continue to exist to give
                 users a chance to reconnect. Zero means they will be terminated
                 immediately.
+              </p>
+            </Field>
+          )}
+          {settings["sessionLessClientLingerTime"] !== undefined && (
+            <Field label="Session-less client idle limit">
+              <TextInput {...vprops("sessionLessClientLingerTime")} />
+              <p className="details">
+                How long a client is allowed to remain connected without being
+                in a session, before they join or host one or after their
+                session has ended. Don't set this to a too low value, users
+                might need a few minutes to type in passwords and such! Zero
+                disables this.
               </p>
             </Field>
           )}
