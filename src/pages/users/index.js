@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { getUsers } from "../../api";
 import { ModalContent } from "./modals.js";
 import { getUserFlags, getUserLegend } from "../../components/flags.js";
+import { formatDateTime } from "../../api/format.js";
 
 const UserListTable = ({ users, openModal, locked }) => {
   return (
@@ -28,6 +29,8 @@ const UserListTable = ({ users, openModal, locked }) => {
                 <Link to={`/sessions/${u.session}`}>{u.session}</Link>
               ) : u.state === "quiet_disconnect" ? (
                 "(quietly terminated)"
+              ) : u.lastWithoutSession ? (
+                `(none since ${formatDateTime(u.lastWithoutSession)})`
               ) : (
                 ""
               )}
