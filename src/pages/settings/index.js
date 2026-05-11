@@ -208,7 +208,8 @@ export default class extends React.Component {
             <TextInput long {...vprops("serverTitle")} />
           </Field>
           <Field label="Connection timeout">
-            <TextInput {...vprops("clientTimeout")} />
+            <TextInput {...vprops("clientTimeout")} />{" "}
+            (in <em>seconds</em> unless otherwise specified)
           </Field>
           <Field label="Log retention">
             <TextInput {...vprops("logpurgedays")} />{" "}
@@ -302,11 +303,13 @@ export default class extends React.Component {
             <TextInput {...vprops("sessionUserLimit")} />
           </Field>
           <Field label="Idle time limit">
-            <TextInput {...vprops("idleTimeLimit")} />
+            <TextInput {...vprops("idleTimeLimit")} />{" "}
+            (in <em>seconds</em> unless otherwise specified)
           </Field>
           {settings["emptySessionLingerTime"] !== undefined && (
             <Field label="Empty session time limit">
-              <TextInput {...vprops("emptySessionLingerTime")} />
+              <TextInput {...vprops("emptySessionLingerTime")} />{" "}
+              (in <em>seconds</em> unless otherwise specified)
               <p className="details">
                 How long non-persistent empty sessions continue to exist to give
                 users a chance to reconnect. Zero means they will be terminated
@@ -316,7 +319,8 @@ export default class extends React.Component {
           )}
           {settings["sessionLessClientLingerTime"] !== undefined && (
             <Field label="Session-less client idle limit">
-              <TextInput {...vprops("sessionLessClientLingerTime")} />
+              <TextInput {...vprops("sessionLessClientLingerTime")} />{" "}
+              (in <em>seconds</em> unless otherwise specified)
               <p className="details">
                 How long a client is allowed to remain connected without being
                 in a session, before they join or host one or after their
