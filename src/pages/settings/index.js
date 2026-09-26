@@ -299,6 +299,21 @@ export default class extends React.Component {
           <Field label="Max simultaneous sessions">
             <TextInput {...vprops("sessionCountLimit")} />
           </Field>
+          {settings["clobberLingeringSessions"] !== undefined && (
+            <Field>
+              <CheckboxInput
+                label="Terminate lingering sessions to make room for new ones"
+                {...vprops("clobberLingeringSessions")}
+              />
+              <p className="details">
+                Enabling this will make the server automatically terminate
+                sessions with no users in them that are not persistent without
+                users and not exempt from the idle timeout to make room when
+                someone tries to host a new session. Sessions with the least
+                work time spent are terminated first.
+              </p>
+            </Field>
+          )}
           <Field label="Max users per session">
             <TextInput {...vprops("sessionUserLimit")} />
           </Field>
