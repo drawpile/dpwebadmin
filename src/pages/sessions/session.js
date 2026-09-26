@@ -63,6 +63,10 @@ const SessionInfo = ({ session, openModal, vprops, locked }) => {
         <Field label="Started at">
           <ReadOnly value={formatDateTime(session.startTime)} />
         </Field>
+        {session.drawingTimeMinutes !== undefined && (
+          <Field label="Approximate work time">
+            <ReadOnly value={session.drawingTimeMinutes + " minute(s)"} />
+          </Field>)}
         <Field label="Size">
           <ReadOnly value={(session.size / (1024 * 1024)).toFixed(2) + " MB"} />
           /
